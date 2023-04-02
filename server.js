@@ -2,10 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import userRoutes from './routes/userRoutes.js';
 import passport from 'passport';
 import bodyParser from 'body-parser';
 import auth_middleware from './middlewares/passport.js';
+
+import userRoutes from './routes/userRoutes.js';
+import electionRoutes from './routes/electionRoutes.js';
+
 
 dotenv.config();
 
@@ -32,6 +35,7 @@ app.use(passport.initialize());
 app.use(bodyParser.json());
 
 app.use('/api', userRoutes);
+app.use('/api', electionRoutes);
 
 app.listen(port, () => {
     console.log(`The server is listening to the port ${port}`);

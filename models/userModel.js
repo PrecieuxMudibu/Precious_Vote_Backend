@@ -18,4 +18,5 @@ const userSchema = new Schema(
 userSchema.plugin(mongooseUniqueValidator);
 
 const User = model('User', userSchema);
+
 export default User;

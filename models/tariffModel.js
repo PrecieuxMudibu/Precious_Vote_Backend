@@ -13,4 +13,5 @@ const tariffSchema = new Schema(
 tariffSchema.plugin(mongooseUniqueValidator);
 
 const Tariff = model('Tariff', tariffSchema);
+
 export default Tariff;

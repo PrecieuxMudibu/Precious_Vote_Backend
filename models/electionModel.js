@@ -25,4 +25,5 @@ const electionSchema = new Schema(
 );
 
 const Election = model('Election', electionSchema);
+
 export default Election;
