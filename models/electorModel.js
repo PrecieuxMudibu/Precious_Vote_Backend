@@ -20,3 +20,4 @@ const electorSchema = new Schema(
 const Elector = model('Elector', electorSchema);
 
 export default Elector;
+
