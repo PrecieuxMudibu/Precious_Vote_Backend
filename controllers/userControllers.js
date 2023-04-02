@@ -8,7 +8,6 @@ function register(request, response, next) {
     bcrypt
         .hash(request.body.password, 10)
         .then((hash) => {
-            console.log('hash>>>', hash);
             const user = new User({
                 name: request.body.name,
                 first_name: request.body.first_name,
@@ -25,13 +24,10 @@ function register(request, response, next) {
                         name: user.name,
                         id: user._id,
                     };
-                    console.log('payload>>>', payload);
 
                     const token = jwt.sign(payload, 'NEVER GIVE UP', {
                         expiresIn: '1d',
                     });
-
-                    console.log('token>>>', token);
 
                     return response.status(201).json({
                         message: 'Votre compte a été créé avec succès.',
@@ -48,9 +44,7 @@ function register(request, response, next) {
                 })
                 .catch((error) => response.status(400).json({ error }));
         })
-        .catch((error) => {
-            response.status(500).json({ error });
-        });
+        .catch((error) => response.status(500).json({ error }));
 }
 
 export { register };
