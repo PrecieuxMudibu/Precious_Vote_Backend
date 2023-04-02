@@ -20,6 +20,6 @@ const candidateSchema = new Schema(
     { timestamps: true }
 );
 
-const Candidate = model('candidate', candidateSchema);
+const Candidate = model('Candidate', candidateSchema);
 
 export default Candidate;
