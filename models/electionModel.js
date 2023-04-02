@@ -24,7 +24,5 @@ const electionSchema = new Schema(
     { timestamps: true }
 );
 
-electionSchema.plugin(mongooseUniqueValidator);
-
-const User = model('Election', electionSchema);
-export default User;
+const Election = model('Election', electionSchema);
+export default Election;
