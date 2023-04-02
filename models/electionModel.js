@@ -1,12 +1,20 @@
 import mongoose from 'mongoose';
-import mongooseUniqueValidator from 'mongoose-unique-validator';
 
 const { Schema, model } = mongoose;
 
 const electionSchema = new Schema(
     {
-        name: { type: String, unique: true },
-        description: { type: String, unique: true },
+        user_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        tariff_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'TAriff',
+        },
+
+        name: { type: String },
+        description: { type: String },
         picture: { type: String },
         begin_date: { type: Date },
         end_date: { type: Date },
