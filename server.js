@@ -5,8 +5,10 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes.js';
 import passport from 'passport';
 import bodyParser from 'body-parser';
+import auth_middleware from './middlewares/passport.js';
 
 dotenv.config();
+
 
 const app = express();
 const port = process.env.PORT || 5000;

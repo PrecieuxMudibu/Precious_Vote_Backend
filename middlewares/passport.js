@@ -1,13 +1,14 @@
 import passportJwt from 'passport-jwt';
 import passport from 'passport';
-import User from '../models/userModel';
+import User from '../models/userModel.js';
 
 const JwtStrategy = passportJwt.Strategy;
 const ExtractJwt = passportJwt.ExtractJwt;
 
-const secret = process.env.JWT_SECRET;
+// TO DO : PLACE IT IN ENV VARIABLE
+const secret = 'NEVER GIVE UP';
 
-const opts = {};
+let opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = secret;
 
