@@ -13,13 +13,16 @@ const electionSchema = new Schema(
             ref: 'TAriff',
         },
 
-        name: { type: String },
+        name: { type: String, required: true },
         description: { type: String },
         picture: { type: String },
         begin_date: { type: Date },
         end_date: { type: Date },
         first_round_eligibility_criteria: { type: Number },
-        finished: { type: Boolean },
+        status: {
+            type: String,
+            enum: ['Not yet', 'In progress', 'Completed'],
+        },
     },
     { timestamps: true }
 );
