@@ -42,6 +42,12 @@ You have to do a post request with a JSON object like this.
 }
 
 
+### Route for get candidates
+
+Route : http://localhost:8000/api/get_candidates/642a0b47bcb981f2fe6484f7/6429f1003ad404877bdbef0c
+
+The first parameter in the route is the election_id and the second is the post_id.
+
 
 
 
