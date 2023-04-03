@@ -10,7 +10,7 @@ const roundSchema = new Schema(
         },
 
         number: { type: Number },
-        status: { type: String },
+        status: { type: String, enum: ['Not started', 'In progress', 'Completed'] },
     },
     { timestamps: true }
 );
