@@ -51,6 +51,101 @@ You have to do a post request with a JSON object like this.
   "name": "Vice-Sécrétaire"
 }
 
+### Route for create an election
+
+Route : http://localhost:8000/api/create_election
+
+You have to do a post request with a JSON object like this.
+
+{
+        "user_id": "642947499e82b0fe63a54758",
+        "name":"Election G3 MAth-info",
+        "description":"lorem 133F,sk,c,,",
+        "begin_date":"2023-04-03",
+        "end_date":"2023-04-05",
+        "first_round_eligibility_criteria": 50,
+        "electors": [
+          {
+            "first_name":"Tony",
+            "name":"Stark"
+          },
+           {
+            "first_name":"Steve",
+            "name":"Rogers"
+          },
+          {
+            "first_name":"Natasha",
+            "name":"Romanoff"
+          },
+          {
+            "first_name":"Clint",
+            "name":"Barton"
+          },
+          {
+            "first_name":"Bruce",
+            "name":"Banner"
+          },
+          {
+            "first_name":"Thor",
+            "name":"Odinson"
+          },
+            {
+            "first_name":"Stephen",
+            "name":"Strange"
+          },
+            {
+            "first_name":"Peter",
+            "name":"Parker"
+          }
+          ],
+        "candidates": [
+            {
+                "post_id": "6429f1003ad404877bdbef0c",
+                "people": [
+                     {
+                        "name":"Stark",
+                        "first_name":"Tony",
+                        "picture":"Image"
+                     },
+                     {
+                        "name":"Rogers",
+                        "first_name":"Steve",
+                        "picture":"Image"
+                     },
+                     {
+                        "name":"Danvers",
+                        "first_name":"Carol",
+                        "picture":"Image"
+                     }
+
+                ]
+            },
+            {
+                "post_id": "6429f1383ad404877bdbef0e",
+                "people": [
+                     {
+                        "name":"Parker",
+                        "first_name":"Peter",
+                        "picture":"Image"
+                     },
+                     {
+                        "name":"Bishop",
+                        "first_name":"Kate",
+                        "picture":"Image"
+                     },
+                     {
+                        "name":"Khan",
+                        "first_name":"Kamala",
+                        "picture":"Image"
+                     }
+
+                ]
+            }
+            
+            
+            ]
+}
+
 ### Route for get candidates
 
 Route : http://localhost:8000/api/get_candidates/642a0b47bcb981f2fe6484f7/6429f1003ad404877bdbef0c
@@ -64,46 +159,9 @@ The first parameter in the route is the election_id and the second is the post_i
 
 
 
-### Send an email for confirm that an account has been activate successfully
-Route : http://localhost:3000/api/activate-account
 
-You have to do a post request with a JSON object like this.
-{
-    "lang": "en",
-    "data": {
-        "name": "Précieux",
-        "email": "mudibuprecieux@gmail.com",
-        "sexe": "Homme"
-    }
-}
 
-### Send an email for confirm that an account has been activate successfully
-Route : http://localhost:3000/api/activate-account
 
-You have to do a post request with a JSON object like this.
-{
-    "lang": "en",
-    "data": {
-        "name": "Précieux",
-        "email": "mudibuprecieux@gmail.com",
-        "sexe": "Homme"
-    }
-}
-
-### Send an email for notify that the password has been changed successfully
-Route : http://localhost:3000/api/notify-password-changed
-
-You have to do a post request with a JSON object like this.
-{
-    "lang": "fr",
-    "data": {
-        "name": "Précieux",
-        "email": "mudibuprecieux@gmail.com",
-        "sexe": "Homme"
-    }
-}
-
-### Send an email which contain the code for change password
 Route : http://localhost:3000/api/send-code-for-change-password
 
 You have to do a post request with a JSON object like this.
@@ -121,4 +179,3 @@ You have to do a post request with a JSON object like this.
 
 ## Authors
 [Precieux Mudibu](https://github.com/PrecieuxMudibu)
-[Jeereq Minganda](https://github.com/PrecieuxMudibu)
