@@ -4,9 +4,9 @@ const { Schema, model } = mongoose;
 
 const roundSchema = new Schema(
     {
-        election_id: {
+        post_id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Election',
+            ref: 'Post',
         },
 
         number: { type: Number },

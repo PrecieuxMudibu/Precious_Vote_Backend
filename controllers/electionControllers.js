@@ -2,6 +2,7 @@ import Election from '../models/electionModel.js';
 import Elector from '../models/electorModel.js';
 import Candidate from '../models/candidateModel.js';
 import Post from '../models/postModel.js';
+import Round from '../models/roundModel.js';
 
 function generate_random_string(o) {
     var a = 10,
@@ -77,9 +78,11 @@ function create_election(request, response, next) {
             .save()
             .then((elector) => {})
             .catch((error) => console.log({ elector: error }));
+
+        // TODOS : SEND EMAIL WHICH CONTAIN THE TOKEN FOR VOTE TO THE ELECTORS
     }
 
-    // ADD CANDIDATES
+    // ADD POST
     for (let i = 0; i < candidates.length; i++) {
         let current_element = candidates[i];
 
@@ -97,6 +100,31 @@ function create_election(request, response, next) {
             })
             .catch((error) => console.log({ post: error }));
 
+        // ADD A ROUND FOR THIS POST
+        if (two_rounds == true) {
+            const round_1 = new Round({
+                post_id: post._id,
+                number: 1,
+                status: 'Not started',
+            });
+            round_1
+                .save()
+                .then((round_1) => {})
+                .catch((error) => console.log({ round_1: error }));
+
+            const round_2 = new Round({
+                post_id: post._id,
+                number: 2,
+                status: 'Not started',
+            });
+            round_2
+                .save()
+                .then((round_2) => {})
+                .catch((error) => console.log({ round_2: error }));
+        } else {
+        }
+
+        // ADD CANDIDATES TO THEIR POST
         for (let j = 0; j < current_element.people.length; j++) {
             let current_candidate = current_element.people[j];
 
@@ -108,7 +136,6 @@ function create_election(request, response, next) {
                 election_id: election._id,
                 post_id: post._id,
             });
-
             candidate
                 .save()
                 .then((candidate) => {})
