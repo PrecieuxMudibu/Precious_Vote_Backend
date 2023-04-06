@@ -11,6 +11,7 @@ const electionSchema = new Schema(
         name: { type: String, required: true },
         tariff: {
             type: String,
+            required: true,
             enum: ['Free', 'Premium', 'VIP'],
         },
         description: { type: String },
