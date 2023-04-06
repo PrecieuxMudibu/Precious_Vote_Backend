@@ -86,63 +86,76 @@ function create_election(request, response, next) {
         first_round_eligibility_criteria,
         electors,
         candidates,
+        tariff,
         two_rounds,
     } = request.body;
 
-    const election = new Election({
-        user_id: user_id,
-        name: name,
-        description: description,
-        first_round_eligibility_criteria: first_round_eligibility_criteria,
-        status: 'Not yet',
-        two_rounds: two_rounds,
-    });
+    if (!tariff || tariff != 'Free' || tariff != 'Premium' || tariff != 'VIP') {
+        return response.status(404).json({
+            message: "Vous n'avez pas indiqué le tarif de l'élection",
+        });
+    } else {
+        const election = new Election({
+            user_id: user_id,
+            name: name,
+            description: description,
+            first_round_eligibility_criteria: first_round_eligibility_criteria,
+            status: 'Not yet',
+            tariff: tariff,
+            two_rounds: two_rounds,
+        });
 
-    election
-        .save()
-        .then((election) => {
-            // ADD ELECTORS
-            for (let i = 0; i < electors.length; i++) {
-                let current_elector = electors[i];
-                add_elector(current_elector, election);
-                // TODOS : SEND EMAIL WHICH CONTAIN THE TOKEN FOR VOTE TO THE ELECTORS
-            }
+        election
+            .save()
+            .then((election) => {
+                // ADD ELECTORS
+                for (let i = 0; i < electors.length; i++) {
+                    let current_elector = electors[i];
+                    add_elector(current_elector, election);
+                    // TODOS : SEND EMAIL WHICH CONTAIN THE TOKEN FOR VOTE TO THE ELECTORS
+                }
 
-            // ADD POST
-            for (let i = 0; i < candidates.length; i++) {
-                let current_element = candidates[i];
+                // ADD POST
+                for (let i = 0; i < candidates.length; i++) {
+                    let current_element = candidates[i];
 
-                let current_post = current_element.post;
-                const post = new Post({
-                    election_id: election._id,
-                    name: current_post,
-                });
-                post.save()
-                    .then((post) => {
-                        create_round(1, post);
-                        if (two_rounds == true) {
-                            create_round(2, post);
-                        }
+                    let current_post = current_element.post;
+                    const post = new Post({
+                        election_id: election._id,
+                        name: current_post,
+                    });
+                    post.save()
+                        .then((post) => {
+                            create_round(1, post);
+                            if (two_rounds == true) {
+                                create_round(2, post);
+                            }
 
-                        // ADD CANDIDATES TO THEIR POST
-                        for (
-                            let j = 0;
-                            j < current_element.people.length;
-                            j++
-                        ) {
-                            let current_candidate = current_element.people[j];
-                            add_candidate(current_candidate, post, election);
-                        }
-                    })
-                    .catch((error) => console.log({ post: error }));
-            }
-        })
-        .catch((error) => console.log({ election: error }));
+                            // ADD CANDIDATES TO THEIR POST
+                            for (
+                                let j = 0;
+                                j < current_element.people.length;
+                                j++
+                            ) {
+                                let current_candidate =
+                                    current_element.people[j];
+                                add_candidate(
+                                    current_candidate,
+                                    post,
+                                    election
+                                );
+                            }
+                        })
+                        .catch((error) => console.log({ post: error }));
+                }
+            })
+            .catch((error) => console.log({ election: error }));
 
-    return response.status(201).json({
-        message: 'Votre élection a été créée avec succès.',
-        election,
-    });
+        return response.status(201).json({
+            message: 'Votre élection a été créée avec succès.',
+            election,
+        });
+    }
 }
 
 export { create_election };
