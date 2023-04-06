@@ -3,6 +3,7 @@ import Elector from '../models/electorModel.js';
 import Candidate from '../models/candidateModel.js';
 import Post from '../models/postModel.js';
 import Round from '../models/roundModel.js';
+import CandidateRound from '../models/candidateRoundModel.js';
 
 function generate_random_string(o) {
     var a = 10,
@@ -44,6 +45,8 @@ function add_candidate(candidateInfo, post, election) {
         .save()
         .then((candidate) => {})
         .catch((error) => console.log({ candidate: error }));
+
+    return candidate;
 }
 function create_round(number, post) {
     const round = new Round({
@@ -55,6 +58,8 @@ function create_round(number, post) {
         .save()
         .then((round_1) => {})
         .catch((error) => console.log({ [round + ' ' + number]: error }));
+
+    return round;
 }
 
 function add_elector(electorInfo, election) {
@@ -90,7 +95,10 @@ function create_election(request, response, next) {
         two_rounds,
     } = request.body;
 
-    if (!tariff || tariff != 'Free' || tariff != 'Premium' || tariff != 'VIP') {
+    if (
+        !tariff ||
+        (tariff != 'Free' && tariff != 'Premium' && tariff != 'VIP')
+    ) {
         return response.status(404).json({
             message: "Vous n'avez pas indiqué le tarif de l'élection",
         });
@@ -126,9 +134,11 @@ function create_election(request, response, next) {
                     });
                     post.save()
                         .then((post) => {
-                            create_round(1, post);
+                            let round_1 = create_round(1, post);
+                            console.log('round_1 >>> ', round_1);
                             if (two_rounds == true) {
-                                create_round(2, post);
+                                let round_2 = create_round(2, post);
+                                console.log('round_2 >>> ', round_2);
                             }
 
                             // ADD CANDIDATES TO THEIR POST
@@ -139,11 +149,25 @@ function create_election(request, response, next) {
                             ) {
                                 let current_candidate =
                                     current_element.people[j];
-                                add_candidate(
+                                const candidate = add_candidate(
                                     current_candidate,
                                     post,
                                     election
                                 );
+                                console.log('candidate >>> ', candidate);
+                                //  TODOS : ADD CANDIDATES TO THE LIST OF PARTICIPANT FOR THE ROUND 1
+
+                                const candidateRound = new CandidateRound({
+                                    candidate_id: candidate._id,
+                                    round_id: round_1._id,
+                                });
+
+                                candidateRound
+                                    .save()
+                                    .then((candidateRound) => {})
+                                    .catch((error) =>
+                                        console.log({ candidate: error })
+                                    );
                             }
                         })
                         .catch((error) => console.log({ post: error }));
