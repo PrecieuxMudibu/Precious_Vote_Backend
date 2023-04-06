@@ -15,6 +15,7 @@ function vote_candidate(request, response) {
     const { candidate_id, elector_id, round_id } = request.body;
 
     // TODO : ADD A CODE FOR VERIFY IF THE ROUND IS CLOSED
+
     // If it is finished vote with the second round_id if it exists
 
     const vote = new ElectorCandidateRound({

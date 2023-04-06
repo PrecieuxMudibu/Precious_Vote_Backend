@@ -12,6 +12,10 @@ const electorCandidateRoundSchema = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Candidate',
         },
+        post_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Post',
+        },
         round_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Round',
