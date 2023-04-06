@@ -4,6 +4,17 @@ import Candidate from '../models/candidateModel.js';
 import Post from '../models/postModel.js';
 import Round from '../models/roundModel.js';
 
+function create_round(number, post) {
+    const round = new Round({
+        post_id: post._id,
+        number: number,
+        status: 'Not started',
+    });
+    round
+        .save()
+        .then((round_1) => {})
+        .catch((error) => console.log({ [round + ' ' + number]: error }));
+}
 function generate_random_string(o) {
     var a = 10,
         b = 'abcdefghijklmnopqrstuvwxyz',
@@ -29,6 +40,26 @@ function generate_random_string(o) {
         c += e[Math.floor(Math.random() * e.length)];
     }
     return c;
+}
+
+function add_elector(electorInfo, election) {
+    const elector = new Elector({
+        name: electorInfo.name,
+        first_name: electorInfo.first_name,
+        email: electorInfo.email,
+        token_for_vote: generate_random_string({
+            includeUpperCase: true,
+            includeNumbers: true,
+            length: 50,
+            startsWithLowerCase: true,
+        }),
+        election_id: election._id,
+    });
+
+    elector
+        .save()
+        .then((elector) => {})
+        .catch((error) => console.log({ elector: error }));
 }
 
 function create_election(request, response, next) {
@@ -61,24 +92,7 @@ function create_election(request, response, next) {
     for (let i = 0; i < electors.length; i++) {
         let current_elector = electors[i];
 
-        const elector = new Elector({
-            name: current_elector.name,
-            first_name: current_elector.first_name,
-            email: current_elector.email,
-            token_for_vote: generate_random_string({
-                includeUpperCase: true,
-                includeNumbers: true,
-                length: 50,
-                startsWithLowerCase: true,
-            }),
-            election_id: election._id,
-        });
-
-        elector
-            .save()
-            .then((elector) => {})
-            .catch((error) => console.log({ elector: error }));
-
+        add_elector(current_elector, election);
         // TODOS : SEND EMAIL WHICH CONTAIN THE TOKEN FOR VOTE TO THE ELECTORS
     }
 
@@ -102,35 +116,10 @@ function create_election(request, response, next) {
 
         // ADD A ROUND FOR THIS POST
         if (two_rounds == true) {
-            const round_1 = new Round({
-                post_id: post._id,
-                number: 1,
-                status: 'Not started',
-            });
-            round_1
-                .save()
-                .then((round_1) => {})
-                .catch((error) => console.log({ round_1: error }));
-
-            const round_2 = new Round({
-                post_id: post._id,
-                number: 2,
-                status: 'Not started',
-            });
-            round_2
-                .save()
-                .then((round_2) => {})
-                .catch((error) => console.log({ round_2: error }));
+            create_round(1, post);
+            create_round(2, post);
         } else {
-            const round_1 = new Round({
-                post_id: post._id,
-                number: 1,
-                status: 'Not started',
-            });
-            round_1
-                .save()
-                .then((round_1) => {})
-                .catch((error) => console.log({ round_1: error }));
+            create_round(1, post);
         }
 
         // ADD CANDIDATES TO THEIR POST
