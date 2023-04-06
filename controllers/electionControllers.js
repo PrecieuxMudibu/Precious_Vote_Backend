@@ -122,6 +122,15 @@ function create_election(request, response, next) {
                 .then((round_2) => {})
                 .catch((error) => console.log({ round_2: error }));
         } else {
+            const round_1 = new Round({
+                post_id: post._id,
+                number: 1,
+                status: 'Not started',
+            });
+            round_1
+                .save()
+                .then((round_1) => {})
+                .catch((error) => console.log({ round_1: error }));
         }
 
         // ADD CANDIDATES TO THEIR POST
