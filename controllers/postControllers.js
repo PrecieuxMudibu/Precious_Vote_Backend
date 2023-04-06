@@ -1,9 +1,10 @@
 import Post from '../models/postModel.js';
 
 function create_post(request, response, next) {
-    const { name } = request.body;
+    const { election_id, name } = request.body;
 
     const post = new Post({
+        election_id: election_id,
         name: name,
     });
 

@@ -9,7 +9,10 @@ const electionSchema = new Schema(
             ref: 'User',
         },
         name: { type: String, required: true },
-        tariff_id: { type: String, required: true },
+        tariff: {
+            type: String,
+            enum: ['Free', 'Premium', 'VIP'],
+        },
         description: { type: String },
         picture: { type: String },
         first_round_eligibility_criteria: { type: Number },
@@ -17,6 +20,7 @@ const electionSchema = new Schema(
             type: String,
             enum: ['Not yet', 'In progress', 'Completed'],
         },
+        two_rounds: { type: Boolean },
     },
     { timestamps: true }
 );

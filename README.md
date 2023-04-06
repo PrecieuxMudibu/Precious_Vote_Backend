@@ -61,8 +61,6 @@ You have to do a post request with a JSON object like this.
         "user_id": "642947499e82b0fe63a54758",
         "name":"Election G3 MAth-info",
         "description":"lorem 133F,sk,c,,",
-        "begin_date":"2023-04-03",
-        "end_date":"2023-04-05",
         "first_round_eligibility_criteria": 50,
         "electors": [
           {
@@ -100,7 +98,7 @@ You have to do a post request with a JSON object like this.
           ],
         "candidates": [
             {
-                "post_id": "6429f1003ad404877bdbef0c",
+                "post": "President",
                 "people": [
                      {
                         "name":"Stark",
@@ -121,7 +119,7 @@ You have to do a post request with a JSON object like this.
                 ]
             },
             {
-                "post_id": "6429f1383ad404877bdbef0e",
+                "post": "Vice-président",
                 "people": [
                      {
                         "name":"Parker",

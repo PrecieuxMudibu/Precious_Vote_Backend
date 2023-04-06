@@ -1,6 +1,7 @@
 import Election from '../models/electionModel.js';
 import Elector from '../models/electorModel.js';
 import Candidate from '../models/candidateModel.js';
+import Post from '../models/postModel.js';
 
 function generate_random_string(o) {
     var a = 10,
@@ -34,28 +35,26 @@ function create_election(request, response, next) {
         user_id,
         name,
         description,
-        begin_date,
-        end_date,
         status,
         first_round_eligibility_criteria,
         electors,
         candidates,
+        two_rounds,
     } = request.body;
 
     const election = new Election({
         user_id: user_id,
         name: name,
         description: description,
-        begin_date: begin_date,
-        end_date: end_date,
         first_round_eligibility_criteria: first_round_eligibility_criteria,
         status: 'Not yet',
+        two_rounds: two_rounds,
     });
 
     election
         .save()
         .then((election) => {})
-        .catch((error) => response.status(400).json({ error: 'rrr' }));
+        .catch((error) => console.log({ election: error }));
 
     // ADD ELECTORS
     for (let i = 0; i < electors.length; i++) {
@@ -77,13 +76,26 @@ function create_election(request, response, next) {
         elector
             .save()
             .then((elector) => {})
-            .catch((error) => response.status(404).json({ error }));
+            .catch((error) => console.log({ elector: error }));
     }
 
     // ADD CANDIDATES
     for (let i = 0; i < candidates.length; i++) {
         let current_element = candidates[i];
-        let current_post = current_element.post_id;
+
+        let current_post = current_element.post;
+        const post = new Post({
+            election_id: election._id,
+            name: current_post,
+        });
+        post.save()
+            .then((post) => {
+                console.log(
+                    'NEW POST post_id>>>',
+                    post.name + ' >>>' + post.id
+                );
+            })
+            .catch((error) => console.log({ post: error }));
 
         for (let j = 0; j < current_element.people.length; j++) {
             let current_candidate = current_element.people[j];
@@ -94,13 +106,13 @@ function create_election(request, response, next) {
                 picture: current_candidate.picture,
 
                 election_id: election._id,
-                post_id: current_post,
+                post_id: post._id,
             });
 
             candidate
                 .save()
                 .then((candidate) => {})
-                .catch((error) => response.status(404).json({ error }));
+                .catch((error) => console.log({ candidate: error }));
         }
     }
 
