@@ -31,6 +31,18 @@ function generate_random_string(o) {
     }
     return c;
 }
+function add_the_candidate_to_the_round(round, candidate) {
+    const candidateRound = new CandidateRound({
+        candidate_id: candidate._id,
+        round_id: round._id,
+    });
+
+    candidateRound
+        .save()
+        .then((candidateRound) => {})
+        .catch((error) => console.log({ candidate: error }));
+}
+
 function add_candidate(candidateInfo, post, election) {
     const candidate = new Candidate({
         name: candidateInfo.name,
@@ -155,19 +167,12 @@ function create_election(request, response, next) {
                                     election
                                 );
                                 console.log('candidate >>> ', candidate);
-                                //  TODOS : ADD CANDIDATES TO THE LIST OF PARTICIPANT FOR THE ROUND 1
 
-                                const candidateRound = new CandidateRound({
-                                    candidate_id: candidate._id,
-                                    round_id: round_1._id,
-                                });
-
-                                candidateRound
-                                    .save()
-                                    .then((candidateRound) => {})
-                                    .catch((error) =>
-                                        console.log({ candidate: error })
-                                    );
+                                // ADD CANDIDATES TO THE LIST OF PARTICIPANT FOR THE ROUND 1
+                                add_the_candidate_to_the_round(
+                                    round_1,
+                                    candidate
+                                );
                             }
                         })
                         .catch((error) => console.log({ post: error }));
