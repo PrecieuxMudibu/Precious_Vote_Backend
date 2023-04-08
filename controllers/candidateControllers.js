@@ -13,6 +13,21 @@ function get_candidates(request, response, next) {
         .catch((error) => response.status(500).json({ error }));
 }
 
+// function create_a_voice_for(candidate, elector, round, response) {
+//     const vote = new ElectorCandidateRound({
+//         elector_id: elector._id,
+//         candidate_id: candidate._id,
+//         round_id: round._id,
+//     });
+//     vote.save(vote)
+//         .then((vote) =>
+//             response.status(201).json({
+//                 message: 'Votre vote a été enregistré avec succès',
+//             })
+//         )
+//         .catch((error) => response.status(500).json({ error }));
+// }
+
 function vote_candidate(request, response) {
     const { candidate_id, token_for_vote } = request.body;
 
@@ -23,7 +38,6 @@ function vote_candidate(request, response) {
                     .status(404)
                     .json({ message: 'Aucun électeur trouvé avec ce token' });
             } else {
-                // return response.status(200).json({ elector });
                 Candidate.findOne({ _id: candidate_id })
                     .then((candidate) => {
                         if (candidate == null) {
@@ -31,15 +45,12 @@ function vote_candidate(request, response) {
                                 message: 'Aucun candidat trouvé avec cet id',
                             });
                         } else {
-                            // RETRIEVE ROUNDS FOR THIS POST
                             Round.find({ post_id: candidate.post_id })
                                 .then((rounds) => {
                                     let round_1 = rounds.filter(
                                         (round) => round.number == 1
                                     );
                                     round_1 = round_1[0];
-
-                                    console.log('ROUND_1>>>', round_1);
 
                                     let round_2 = rounds.filter(
                                         (round) => round.number == 2
@@ -54,11 +65,17 @@ function vote_candidate(request, response) {
                                         })
                                             .then((electorCandidateRound) => {
                                                 // THE ELECTOR DOESN'T VOTE BEFORE FOR  THIS ROUND AND THIS POST
-                                           
+
                                                 if (
                                                     electorCandidateRound.length ==
                                                     0
                                                 ) {
+                                                    // create_a_voice_for(
+                                                    //     elector,
+                                                    //     candidate,
+                                                    //     round_1,
+                                                    //     response
+                                                    // );
                                                     const vote =
                                                         new ElectorCandidateRound(
                                                             {
