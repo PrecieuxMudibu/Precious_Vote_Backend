@@ -41,12 +41,19 @@ function start_round(request, response, next) {
             // })
             const election_id = get_election_id_of_this(round);
 
-            Elector.find({ election_id: election_id }).then((electors) =>
-                response.status(200).json({
-                    // message: 'Le round a commencé.',
-                    electors,
-                })
-            );
+            Elector.find({ election_id: election_id }).then((electors) => {
+                // response.status(200).json({
+                //     // message: 'Le round a commencé.',
+                //     electors,
+                // })
+
+                let electors_emails = [];
+                for (let i = 0; i < electors.length; i++) {
+                    let current_elector = electors[i];
+                    electors_emails.push(current_elector.email);
+                }
+                console.log('electors_emails>>>', electors_emails);
+            });
 
             // GET ELECTION ID OF THIS POST
 
