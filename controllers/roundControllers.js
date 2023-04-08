@@ -41,7 +41,6 @@ function create_round(request, response, next) {
 
 function start_round(request, response, next) {
     const { round_id } = request.params;
-    
 
     const filter = { _id: round_id };
     const update = { status: 'In progress', begin_date: Date.now() };
@@ -79,4 +78,13 @@ function close_round(request, response, next) {
         )
         .catch((error) => response.status(400).json({ error }));
 }
-export { create_round, start_round, close_round };
+
+function delete_all_rounds(request, response) {
+    Round.deleteMany()
+        .then((rounds) =>
+            response({ message: 'TOus les rounds ont été supprimés', rounds })
+        )
+        .catch((error) => response.json(error));
+}
+
+export { create_round, start_round, close_round, delete_all_rounds };
