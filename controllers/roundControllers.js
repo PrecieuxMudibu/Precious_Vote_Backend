@@ -40,7 +40,8 @@ function create_round(request, response, next) {
 }
 
 function start_round(request, response, next) {
-    const { round_id } = request.body;
+    const { round_id } = request.params;
+    
 
     const filter = { _id: round_id };
     const update = { status: 'In progress', begin_date: Date.now() };
@@ -64,7 +65,7 @@ function start_round(request, response, next) {
 }
 
 function close_round(request, response, next) {
-    const { round_id } = request.body;
+    const { round_id } = request.params;
 
     const filter = { _id: round_id };
     const update = { status: 'Completed', end_date: Date.now() };
