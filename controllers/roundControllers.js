@@ -7,13 +7,16 @@ function get_election_id_of_this(round) {
     return election_id;
 }
 
-function get_emails(electors) {
-    let electors_emails = [];
+function send_emails_to_all(electors) {
     for (let i = 0; i < electors.length; i++) {
-        let current_elector = electors[i];
-        electors_emails.push(current_elector.email);
+        const current_elector = electors[i];
+
+        send_email_to(
+            current_elector.email,
+            'Jeton de vote',
+            `Bonjour ${current_elector.first_name} ${current_elector.name} ! Vous venez de recevoir votre jeton de vote pour l'élection qui vient de débuter.<br> Vous devrez le saisir pour confirmer chaque vote que vous ferez. <br> Conservez le bien. || <br> Jeton de vote : ${current_elector.token_for_vote}`
+        );
     }
-    return electors_emails;
 }
 
 function create_round(request, response, next) {
@@ -45,42 +48,17 @@ function start_round(request, response, next) {
     Round.findOneAndUpdate(filter, update)
         .populate('post_id')
         .then((round) => {
-            // response.status(200).json({
-            //     message: 'Le round a commencé.',
-            //     round,
-            // })
             const election_id = get_election_id_of_this(round);
 
             Elector.find({ election_id: election_id }).then((electors) => {
-                let electors_emails = get_emails(electors);
+                send_emails_to_all(electors);
 
-                for (let i = 0; i < electors_emails.length; i++) {
-                    const current_elector_email = electors_emails[0];
-                    send_email_to(
-                        current_elector_email,
-                        'Jeton de vote',
-                        'Hello'
-                    );
-                }
-
-                console.log('electors_emails 1>>>', electors_emails);
+                return response.status(200).json({
+                    message:
+                        'Le round a commencé et les électeurs on été notifiés.',
+                    round,
+                });
             });
-
-            // GET ELECTION ID OF THIS POST
-
-            // {
-            //     _id: new ObjectId("64313d858f49528385eb03b3"),
-            //     post_id: new ObjectId("64313d838f49528385eb03a8"),
-            //     number: 1,
-            //     status: 'Not started',
-            //     createdAt: 2023-04-08T10:10:13.115Z,
-            //     updatedAt: 2023-04-08T10:10:13.115Z,
-            //     __v: 0
-            //   }
-
-            // RETRIEVE ALL ELECTORS
-
-            // SEND THEM THEIR CODE BY EMAIL
         })
         .catch((error) => response.status(400).json({ error }));
 }
