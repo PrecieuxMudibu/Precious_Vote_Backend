@@ -39,7 +39,7 @@ function vote_candidate(request, response) {
                                     );
                                     round_1 = round_1[0];
 
-                                    console.log("ROUND_1>>>", round_1)
+                                    console.log('ROUND_1>>>', round_1);
 
                                     let round_2 = rounds.filter(
                                         (round) => round.number == 2
@@ -54,9 +54,10 @@ function vote_candidate(request, response) {
                                         })
                                             .then((electorCandidateRound) => {
                                                 // THE ELECTOR DOESN'T VOTE BEFORE FOR  THIS ROUND AND THIS POST
+                                           
                                                 if (
-                                                    electorCandidateRound ==
-                                                    null
+                                                    electorCandidateRound.length ==
+                                                    0
                                                 ) {
                                                     const vote =
                                                         new ElectorCandidateRound(
