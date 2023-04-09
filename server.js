@@ -12,6 +12,7 @@ import electorRoutes from './routes/electorRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import candidateRoutes from './routes/candidateRoutes.js';
 import electorCandidateRoundRoutes from './routes/electorCandidateRoundRoutes.js';
+import candidateRoundRoutes from './routes/candidateRoundRoutes.js';
 import roundRoutes from './routes/roundRoutes.js';
 
 dotenv.config();
@@ -44,6 +45,7 @@ app.use('/api', postRoutes);
 app.use('/api', candidateRoutes);
 app.use('/api', roundRoutes);
 app.use('/api', electorCandidateRoundRoutes);
+app.use('/api', candidateRoundRoutes);
 
 app.listen(port, () => {
     console.log(`The server is listening to the port ${port}`);
