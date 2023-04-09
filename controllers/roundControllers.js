@@ -79,6 +79,16 @@ function close_round(request, response, next) {
         .catch((error) => response.status(400).json({ error }));
 }
 
+function get_rounds_for_a_post(request, response) {
+    const { post_id } = request.params;
+
+    const query = { post_id: post_id };
+
+    Round.find(query)
+        .then((rounds) => response.status(200).json({ rounds }))
+        .catch((error) => response.status(500).json({ error }));
+}
+
 function delete_all_rounds(request, response) {
     Round.deleteMany()
         .then((rounds) =>
@@ -87,4 +97,10 @@ function delete_all_rounds(request, response) {
         .catch((error) => response.json(error));
 }
 
-export { create_round, start_round, close_round, delete_all_rounds };
+export {
+    create_round,
+    start_round,
+    close_round,
+    get_rounds_for_a_post,
+    delete_all_rounds,
+};
