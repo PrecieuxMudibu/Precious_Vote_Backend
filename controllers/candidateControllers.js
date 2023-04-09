@@ -3,13 +3,13 @@ import ElectorCandidateRound from '../models/electorCandidateRoundModel.js';
 import Round from '../models/roundModel.js';
 import Elector from '../models/electorModel.js';
 
-function get_candidates(request, response, next) {
-    const { election_id, post_id } = request.params;
+function get_all_candidates_for_the_post(request, response, next) {
+    const { post_id } = request.params;
 
-    const query = { election_id: election_id, post_id: post_id };
+    const query = { post_id: post_id };
 
     Candidate.find(query)
-        .then((users) => response.status(200).json({ users }))
+        .then((candidates) => response.status(200).json({ candidates }))
         .catch((error) => response.status(500).json({ error }));
 }
 
@@ -134,4 +134,4 @@ function vote_candidate(request, response) {
         })
         .catch((error) => response.status(500).json({ error }));
 }
-export { get_candidates, vote_candidate };
+export { get_all_candidates_for_the_post, vote_candidate };
