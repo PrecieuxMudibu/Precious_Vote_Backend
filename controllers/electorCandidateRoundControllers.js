@@ -1,5 +1,17 @@
 import ElectorCandidateRound from '../models/electorCandidateRoundModel.js';
 
+function get_history_of_ElectorCandidateRound(request, response) {
+    const { round_id } = request.params;
+
+    const query = { round_id: round_id };
+
+    ElectorCandidateRound.find(query)
+        .then((electorCandidateRound) =>
+            response.status(200).json({ electorCandidateRound })
+        )
+        .catch((error) => response.status(500).json({ error }));
+}
+
 function delete_all_ElectorCandidateRound(request, response) {
     ElectorCandidateRound.deleteMany()
         .then(() =>
@@ -10,4 +22,7 @@ function delete_all_ElectorCandidateRound(request, response) {
         .catch((error) => response.json(error));
 }
 
-export { delete_all_ElectorCandidateRound };
+export {
+    get_history_of_ElectorCandidateRound,
+    delete_all_ElectorCandidateRound,
+};
