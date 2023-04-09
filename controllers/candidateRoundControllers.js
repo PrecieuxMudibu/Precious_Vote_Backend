@@ -1,6 +1,6 @@
 import CandidateRound from '../models/candidateRoundModel.js';
 
-function get_all_candidates_for_the_round(request, response) {
+function get_candidates_for_the_round(request, response) {
     const { round_id } = request.params;
 
     const query = { round_id: round_id };
@@ -14,4 +14,4 @@ function get_all_candidates_for_the_round(request, response) {
         );
 }
 
-export { get_all_candidates_for_the_round };
+export { get_candidates_for_the_round };
