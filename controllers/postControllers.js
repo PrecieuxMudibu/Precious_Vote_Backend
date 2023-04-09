@@ -18,4 +18,14 @@ function create_post(request, response, next) {
         .catch((error) => response.status(400).json({ error }));
 }
 
-export { create_post };
+function get_posts_for_an_election(request, response) {
+    const { election_id } = request.body;
+
+    const query = { election_id: election_id };
+
+    Post.find(query)
+        .then((posts) => response.status(200).json({ posts }))
+        .catch((error) => response.status(500).json({ error }));
+}
+
+export { create_post, get_posts_for_an_election };
