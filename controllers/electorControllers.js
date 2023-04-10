@@ -17,4 +17,14 @@ function update_elector(request, response, next) {
         .catch((error) => response.status(400).json({ error }));
 }
 
-export { update_elector };
+function get_electors(request, response) {
+    const { election_id } = request.params;
+
+    const query = { election_id: election_id };
+
+    Elector.find(query)
+        .then((electors) => response.status(200).json({ electors }))
+        .catch((error) => response.status(500).json({ error }));
+}
+
+export { update_elector, get_electors };

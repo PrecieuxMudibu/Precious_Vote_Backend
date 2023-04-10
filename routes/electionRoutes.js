@@ -4,5 +4,6 @@ import { create_election } from '../controllers/electionControllers.js';
 const router = express.Router();
 
 router.post('/create_election', create_election);
+router.post('/create_election', create_election);
 
 export default router;
