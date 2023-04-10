@@ -6,6 +6,9 @@ function get_history_of_ElectorCandidateRound(request, response) {
     const query = { round_id: round_id };
 
     ElectorCandidateRound.find(query)
+        .populate({ path: 'elector_id', select: ['name', 'first_name'] })
+        .populate({ path: 'candidate_id', select: ['name', 'first_name'] })
+        .populate('round_id', 'number')
         .then((electorCandidateRound) =>
             response.status(200).json({ electorCandidateRound })
         )
