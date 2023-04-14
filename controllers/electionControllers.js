@@ -35,6 +35,7 @@ function add_the_candidate_to_the_round(round, candidate) {
     const candidateRound = new CandidateRound({
         candidate_id: candidate._id,
         round_id: round._id,
+        voice: 0,
     });
 
     candidateRound

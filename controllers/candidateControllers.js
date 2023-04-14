@@ -1,4 +1,5 @@
 import Candidate from '../models/candidateModel.js';
+import CandidateRound from '../models/candidateRoundModel.js';
 import ElectorCandidateRound from '../models/electorCandidateRoundModel.js';
 import Round from '../models/roundModel.js';
 import Elector from '../models/electorModel.js';
@@ -12,21 +13,6 @@ function get_all_candidates_for_the_post(request, response, next) {
         .then((candidates) => response.status(200).json({ candidates }))
         .catch((error) => response.status(500).json({ error }));
 }
-
-// function create_a_voice_for(candidate, elector, round, response) {
-//     const vote = new ElectorCandidateRound({
-//         elector_id: elector._id,
-//         candidate_id: candidate._id,
-//         round_id: round._id,
-//     });
-//     vote.save(vote)
-//         .then((vote) =>
-//             response.status(201).json({
-//                 message: 'Votre vote a été enregistré avec succès',
-//             })
-//         )
-//         .catch((error) => response.status(500).json({ error }));
-// }
 
 function vote_candidate(request, response) {
     const { candidate_id, token_for_vote } = request.body;
@@ -70,12 +56,6 @@ function vote_candidate(request, response) {
                                                     electorCandidateRound.length ==
                                                     0
                                                 ) {
-                                                    // create_a_voice_for(
-                                                    //     elector,
-                                                    //     candidate,
-                                                    //     round_1,
-                                                    //     response
-                                                    // );
                                                     const vote =
                                                         new ElectorCandidateRound(
                                                             {
@@ -88,14 +68,46 @@ function vote_candidate(request, response) {
                                                             }
                                                         );
                                                     vote.save(vote)
-                                                        .then((vote) =>
-                                                            response
-                                                                .status(201)
-                                                                .json({
-                                                                    message:
-                                                                        'Votre vote a été enregistré avec succès',
-                                                                })
-                                                        )
+                                                        .then((vote) => {
+                                                            CandidateRound.findOneAndUpdate(
+                                                                {
+                                                                    elector_id:
+                                                                        elector._id,
+                                                                    round_id:
+                                                                        round_1._id,
+                                                                },
+                                                                {
+                                                                    $inc: {
+                                                                        voices: 1,
+                                                                    },
+                                                                },
+                                                                {
+                                                                    new: true,
+                                                                }
+                                                            )
+                                                                .then(() =>
+                                                                    response
+                                                                        .status(
+                                                                            201
+                                                                        )
+                                                                        .json({
+                                                                            message:
+                                                                                'Votre vote a été enregistré avec succès',
+                                                                        })
+                                                                )
+                                                                .catch(
+                                                                    (error) =>
+                                                                        response
+                                                                            .status(
+                                                                                500
+                                                                            )
+                                                                            .json(
+                                                                                {
+                                                                                    error,
+                                                                                }
+                                                                            )
+                                                                );
+                                                        })
                                                         .catch((error) =>
                                                             response
                                                                 .status(500)

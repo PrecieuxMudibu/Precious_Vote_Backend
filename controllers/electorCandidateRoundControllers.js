@@ -82,14 +82,16 @@ function get_ElectorCandidateRound_of_the_candidates(request, response) {
             // console.log('results>>>', results);
 
             let results = [];
-            candidates_of_this_rounds.forEach((candidate) => {
+            candidates_of_this_rounds.map((candidate) => {
                 ElectorCandidateRound.find(
                     { candidate_id: candidate._id },
                     async (err, data) => {
                         if (err) {
                             console.log(err);
                         } else {
-                            results.push(await data);
+                            // console.log('data>>>', data);
+
+                            results = [...results, data];
                         }
                     }
                 );

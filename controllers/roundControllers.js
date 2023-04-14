@@ -45,7 +45,7 @@ function start_round(request, response, next) {
     const filter = { _id: round_id };
     const update = { status: 'In progress', begin_date: Date.now() };
 
-    Round.findOneAndUpdate(filter, update)
+    Round.findOneAndUpdate(filter, update, { new: true })
         .populate('post_id')
         .then((round) => {
             const election_id = get_election_id_of_this(round);

@@ -48,5 +48,5 @@ app.use('/api', electorCandidateRoundRoutes);
 app.use('/api', candidateRoundRoutes);
 
 app.listen(port, () => {
-    console.log(`The server is listening to the port ${port}`);
+    console.log(`🚀 The server is listening to the port ${port} 🚀`);
 });

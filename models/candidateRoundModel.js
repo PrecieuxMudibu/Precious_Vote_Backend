@@ -12,6 +12,10 @@ const candidateRoundSchema = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Round',
         },
+        voices: {
+            type: mongoose.Schema.Types.Number,
+            default:0
+        },
     },
     { timestamps: true }
 );
