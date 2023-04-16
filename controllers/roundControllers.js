@@ -28,7 +28,7 @@ function add_the_candidate_to_the_round(round, candidate_round) {
     const candidateRound = new CandidateRound({
         candidate_id: candidate_round.candidate_id,
         round_id: round._id,
-        voice: 0,
+        voices: 0,
     });
 
     candidateRound
@@ -113,7 +113,8 @@ function close_round(request, response) {
                                         round_id: round._id,
                                         voices: {
                                             // $gt: 70,
-                                            $gt: first_round_eligibility_criteria_voices,
+                                            $gt: 3,
+                                            // $gt: first_round_eligibility_criteria_voices,
                                         },
                                     })
                                         .populate('candidate_id')
@@ -146,18 +147,16 @@ function close_round(request, response) {
                                                 })
                                                     .sort({ voices: -1 }) // Tri décroissant
                                                     .limit(
-                                                        3
-                                                        // election.candidates_for_the_second_round
+                                                        // 3
+                                                        election.candidates_for_the_second_round
                                                     ) // Recuperation des n premiers candidats
                                                     .then(
-                                                        // TO DO :TEST HERE
-                                                        //
-                                                        //
-                                                        
                                                         (candidates_rounds) => {
                                                             {
-
-                                                                console.log("N PREMIERS candidates_rounds>>", candidates_rounds)
+                                                                console.log(
+                                                                    'N PREMIERS candidates_rounds>>',
+                                                                    candidates_rounds
+                                                                );
                                                                 let round_2 =
                                                                     create_round(
                                                                         2,
@@ -192,6 +191,31 @@ function close_round(request, response) {
                                             }
                                             // 🚀 S'il y en a deux (ou trois, ou quatre, etc.), on crée le deuxième tour pour ce poste avec ces deux (trois ou quatre) candidats
                                             else {
+                                                // TO DO HERE
+                                                let round_2 = create_round(2, {
+                                                    _id: post_id_of_the_round_1,
+                                                });
+                                                // // Ajout des tous les candidats  qui ont dépassé le first_round_eligibility_criteria_voices
+                                                for (
+                                                    let i = 0;
+                                                    i <
+                                                    candidates_rounds.length;
+                                                    i++
+                                                ) {
+                                                    const current_candidate =
+                                                        candidates_rounds[i];
+                                                    add_the_candidate_to_the_round(
+                                                        round_2,
+                                                        current_candidate
+                                                    );
+
+                                                    return response
+                                                        .status(200)
+                                                        .json({
+                                                            message: `Le round 1 est terminé. ${candidates_rounds.length} candidats ont réalisé des scores dépassant le critère d'éligibilité au premier tour. Ces ${candidates_rounds.length} candidats ont été reconduits au deuxième tour.`,
+                                                            round,
+                                                        });
+                                                }
                                             }
                                         });
                                 })
