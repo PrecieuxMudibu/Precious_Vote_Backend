@@ -102,7 +102,7 @@ function close_round(request, response) {
                                 election_id: election_id_of_this_post,
                             })
                                 .then((electors_number) => {
-                                    // Calcum de l'equivalent du pourcenta des voix en fonctions des electeurs
+                                    // Calcul de l'equivalent du pourcenta des voix en fonctions des electeurs
                                     let first_round_eligibility_criteria_voices =
                                         (electors_number *
                                             election.first_round_eligibility_criteria) /
@@ -112,8 +112,8 @@ function close_round(request, response) {
                                     CandidateRound.find({
                                         round_id: round._id,
                                         voices: {
-                                            $gt: 70,
-                                            // $gt: first_round_eligibility_criteria_voices,
+                                            // $gt: 70,
+                                            $gt: first_round_eligibility_criteria_voices,
                                         },
                                     })
                                         .populate('candidate_id')
@@ -137,6 +137,10 @@ function close_round(request, response) {
                                             else if (
                                                 candidates_rounds.length == 0
                                             ) {
+                                                console.log(
+                                                    'AUCUN CANDIDAT candidates_rounds>>',
+                                                    candidates_rounds
+                                                );
                                                 CandidateRound.find({
                                                     round_id: round._id,
                                                 })
@@ -148,31 +152,34 @@ function close_round(request, response) {
                                                         // TO DO :TEST HERE
                                                         //
                                                         //
+                                                        
                                                         (candidates_rounds) => {
                                                             {
-                                                                let round_2 =
-                                                                    create_round(
-                                                                        2,
-                                                                        {
-                                                                            _id: post_id_of_the_round_1,
-                                                                        }
-                                                                    );
-                                                                // Ajout des n premiers candidats au round 2
-                                                                for (
-                                                                    let i = 0;
-                                                                    i <
-                                                                    candidates_rounds.length;
-                                                                    i++
-                                                                ) {
-                                                                    const current_candidate =
-                                                                        candidates_rounds[
-                                                                            i
-                                                                        ];
-                                                                    add_the_candidate_to_the_round(
-                                                                        round_2,
-                                                                        current_candidate
-                                                                    );
-                                                                }
+
+                                                                console.log("N PREMIERS candidates_rounds>>", candidates_rounds)
+                                                                // let round_2 =
+                                                                //     create_round(
+                                                                //         2,
+                                                                //         {
+                                                                //             _id: post_id_of_the_round_1,
+                                                                //         }
+                                                                //     );
+                                                                // // Ajout des n premiers candidats au round 2
+                                                                // for (
+                                                                //     let i = 0;
+                                                                //     i <
+                                                                //     candidates_rounds.length;
+                                                                //     i++
+                                                                // ) {
+                                                                //     const current_candidate =
+                                                                //         candidates_rounds[
+                                                                //             i
+                                                                //         ];
+                                                                //     add_the_candidate_to_the_round(
+                                                                //         round_2,
+                                                                //         current_candidate
+                                                                //     );
+                                                                // }
                                                             }
                                                         }
                                                     )

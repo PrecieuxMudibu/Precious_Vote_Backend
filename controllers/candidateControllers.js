@@ -71,8 +71,8 @@ function vote_candidate(request, response) {
                                                         .then((vote) => {
                                                             CandidateRound.findOneAndUpdate(
                                                                 {
-                                                                    elector_id:
-                                                                        elector._id,
+                                                                    candidate_id:
+                                                                        candidate._id,
                                                                     round_id:
                                                                         round_1._id,
                                                                 },
