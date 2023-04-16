@@ -190,6 +190,11 @@ function close_round(request, response) {
                                                     _id: post_id_of_the_round_1,
                                                 });
                                                 // // Ajout au deuxième round de tous les candidats  qui ont dépassé le first_round_eligibility_criteria_voices
+                                                console.log(
+                                                    'candidates_rounds DEPASSE LE SCORE>>>',
+                                                    candidates_rounds
+                                                );
+
                                                 for (
                                                     let i = 0;
                                                     i <
@@ -202,14 +207,14 @@ function close_round(request, response) {
                                                         round_2,
                                                         current_candidate
                                                     );
-
-                                                    return response
-                                                        .status(200)
-                                                        .json({
-                                                            message: `Le round 1 est terminé. ${candidates_rounds.length} candidats ont réalisé des scores dépassant le critère d'éligibilité au premier tour. Ces ${candidates_rounds.length} candidats ont été reconduits au deuxième tour.`,
-                                                            round,
-                                                        });
                                                 }
+
+                                                return response
+                                                    .status(200)
+                                                    .json({
+                                                        message: `Le round 1 est terminé. ${candidates_rounds.length} candidats ont réalisé des scores dépassant le critère d'éligibilité au premier tour. Ces ${candidates_rounds.length} candidats ont été reconduits au deuxième tour.`,
+                                                        round,
+                                                    });
                                             }
                                         });
                                 })
