@@ -35,6 +35,7 @@ function add_the_candidate_to_the_round(round, candidate) {
     const candidateRound = new CandidateRound({
         candidate_id: candidate._id,
         round_id: round._id,
+        voice: 0,
     });
 
     candidateRound
@@ -101,6 +102,7 @@ function create_election(request, response, next) {
         description,
         status,
         first_round_eligibility_criteria,
+        candidates_for_the_second_round,
         electors,
         candidates,
         tariff,
@@ -120,6 +122,7 @@ function create_election(request, response, next) {
             name: name,
             description: description,
             first_round_eligibility_criteria: first_round_eligibility_criteria,
+            candidates_for_the_second_round: candidates_for_the_second_round,
             status: 'Not yet',
             tariff: tariff,
             two_rounds: two_rounds,
@@ -148,10 +151,6 @@ function create_election(request, response, next) {
                         .then((post) => {
                             let round_1 = create_round(1, post);
                             console.log('round_1 >>> ', round_1);
-                            if (two_rounds == true) {
-                                let round_2 = create_round(2, post);
-                                console.log('round_2 >>> ', round_2);
-                            }
 
                             // ADD CANDIDATES TO THEIR POST
                             for (
