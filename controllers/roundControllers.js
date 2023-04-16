@@ -94,15 +94,14 @@ function close_round(request, response) {
                 Election.findById(election_id_of_this_post)
                     .then((election) => {
                         const election_has_two_rounds = election.two_rounds;
-                        console.log('election>>', election);
 
-                        // 3. Vérifier si two_rouns égal à true
+                        // 3. Vérifier si two_rounds égal à true
                         if (election_has_two_rounds) {
                             Elector.countDocuments({
                                 election_id: election_id_of_this_post,
                             })
                                 .then((electors_number) => {
-                                    // Calcul de l'equivalent du pourcenta des voix en fonctions des electeurs
+                                    // Calcul de l'equivalent du pourcentage des voix en fonctions des electeurs
                                     let first_round_eligibility_criteria_voices =
                                         (electors_number *
                                             election.first_round_eligibility_criteria) /
@@ -113,23 +112,18 @@ function close_round(request, response) {
                                         round_id: round._id,
                                         voices: {
                                             // $gt: 70,
-                                            $gt: 3,
-                                            // $gt: first_round_eligibility_criteria_voices,
+                                            // $gt: 3,
+                                            $gt: first_round_eligibility_criteria_voices,
                                         },
                                     })
                                         .populate('candidate_id')
                                         .then((candidates_rounds) => {
-                                            console.log(
-                                                'CandidateRound>>',
-                                                candidates_rounds
-                                            );
                                             // 🚀 S'il y en a un, pas besoin de deuxième round on ne commence pas le deuxième tour pour ce poste
                                             if (candidates_rounds.length == 1) {
                                                 return response
                                                     .status(200)
                                                     .json({
-                                                        message:
-                                                            'Le round est terminé.',
+                                                        message: `Le round 1 est terminé. Le vainqueur est ${candidates_rounds.candidate_id.first_name} ${candidates_rounds.candidate_id.name}`,
                                                         round,
                                                     });
                                             }
