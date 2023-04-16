@@ -123,7 +123,7 @@ function close_round(request, response) {
                                                 return response
                                                     .status(200)
                                                     .json({
-                                                        message: `Le round 1 est terminé. Le vainqueur est ${candidates_rounds.candidate_id.first_name} ${candidates_rounds.candidate_id.name}`,
+                                                        message: `Le round 1 est terminé. Le vainqueur est ${candidates_rounds[0].candidate_id.first_name} ${candidates_rounds[0].candidate_id.name}`,
                                                         round,
                                                     });
                                             }
