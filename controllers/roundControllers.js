@@ -147,16 +147,11 @@ function close_round(request, response) {
                                                 })
                                                     .sort({ voices: -1 }) // Tri décroissant
                                                     .limit(
-                                                        // 3
                                                         election.candidates_for_the_second_round
                                                     ) // Recuperation des n premiers candidats
                                                     .then(
                                                         (candidates_rounds) => {
                                                             {
-                                                                console.log(
-                                                                    'N PREMIERS candidates_rounds>>',
-                                                                    candidates_rounds
-                                                                );
                                                                 let round_2 =
                                                                     create_round(
                                                                         2,
@@ -180,6 +175,12 @@ function close_round(request, response) {
                                                                         current_candidate
                                                                     );
                                                                 }
+                                                                return response
+                                                                    .status(200)
+                                                                    .json({
+                                                                        message: `Le round 1 est terminé. Aucun candidat n'a réalisé le score requis pour être élu au premier tour. Les ${election.candidates_for_the_second_round} candidats ayant le plus grand score ont été reconduits au deuxième tour.`,
+                                                                        round,
+                                                                    });
                                                             }
                                                         }
                                                     )
@@ -191,11 +192,10 @@ function close_round(request, response) {
                                             }
                                             // 🚀 S'il y en a deux (ou trois, ou quatre, etc.), on crée le deuxième tour pour ce poste avec ces deux (trois ou quatre) candidats
                                             else {
-                                                // TO DO HERE
                                                 let round_2 = create_round(2, {
                                                     _id: post_id_of_the_round_1,
                                                 });
-                                                // // Ajout des tous les candidats  qui ont dépassé le first_round_eligibility_criteria_voices
+                                                // // Ajout au deuxième round de tous les candidats  qui ont dépassé le first_round_eligibility_criteria_voices
                                                 for (
                                                     let i = 0;
                                                     i <
