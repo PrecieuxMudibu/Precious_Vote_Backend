@@ -90,4 +90,14 @@ function login(request, response) {
     });
 }
 
-export { register, login };
+function get_user(request, response) {
+    const { _id } = request.params;
+
+    const query = { _id: _id };
+
+    User.findOne(query)
+        .then((user) => response.status(200).json({ user }))
+        .catch((error) => response.status(500).json({ error }));
+}
+
+export { register, login, get_user };
