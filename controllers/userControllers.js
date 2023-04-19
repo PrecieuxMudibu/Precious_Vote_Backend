@@ -8,8 +8,6 @@ function register(request, response, next) {
         .then((hash) => {
             const user = new User({
                 name: request.body.name,
-                first_name: request.body.first_name,
-                post_name: request.body.post_name,
                 email: request.body.email,
                 password: hash,
                 profile_picture:
@@ -32,8 +30,6 @@ function register(request, response, next) {
                         user: {
                             _id: user._id,
                             name: user.name,
-                            first_name: user.first_name,
-                            post_name: user.post_name,
                             email: user.email,
                             profile_picture: user.profile_picture,
                             token: 'Bearer ' + token,
@@ -51,7 +47,7 @@ function login(request, response) {
     const { email, password } = request.body;
 
     if (!email || !password)
-        return res.status(400).json({
+        return response.status(400).json({
             type: 'Error',
             message: 'The pseudo and password are required',
         });

@@ -18,7 +18,7 @@ import roundRoutes from './routes/roundRoutes.js';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 
 app.use(
     cors({
@@ -27,6 +27,19 @@ app.use(
     })
 );
 
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader(
+//         'Access-Control-Allow-Headers',
+//         'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
+//     );
+//     res.setHeader(
+//         'Access-Control-Allow-Methods',
+//         'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+//     );
+//     next();
+// });
+
 mongoose
     .connect(process.env.MONGO_DB_URL, {
         useNewUrlParser: true,
@@ -34,7 +47,7 @@ mongoose
     })
     .then(() => console.log('Connection to MongoDB done'))
     .catch((error) => console.log('Error Connecting to the Database', error));
-
+        
 app.use(passport.initialize());
 app.use(bodyParser.json());
 
