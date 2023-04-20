@@ -6,6 +6,7 @@ function get_candidates_for_the_round(request, response) {
     const query = { round_id: round_id };
 
     CandidateRound.find(query)
+        .sort({ voices: -1 })
         .populate('round_id')
         .populate('candidate_id')
         .then((candidates) => response.status(200).json({ candidates }))
