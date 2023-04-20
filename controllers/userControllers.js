@@ -96,7 +96,16 @@ function get_user(request, response) {
     const query = { _id: _id };
 
     User.findOne(query)
-        .then((user) => response.status(200).json({ user }))
+        .then((user) =>
+            response.status(200).json({
+                user: {
+                    _id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    profile_picture: user.profile_picture,
+                },
+            })
+        )
         .catch((error) => response.status(500).json({ error }));
 }
 

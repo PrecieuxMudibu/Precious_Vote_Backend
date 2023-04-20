@@ -19,7 +19,7 @@ function create_post(request, response, next) {
 }
 
 function get_posts_for_an_election(request, response) {
-    const { election_id } = request.body;
+    const { election_id } = request.params;
 
     const query = { election_id: election_id };
 

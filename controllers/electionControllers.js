@@ -186,6 +186,16 @@ function create_election(request, response, next) {
     }
 }
 
+function get_an_election(request, response) {
+    const { election_id } = request.params;
+
+    const query = { _id:  election_id };
+
+    Election.findOne(query)
+        .then((election) => response.status(200).json({ election }))
+        .catch((error) => response.status(500).json({ error }));
+}
+
 function get_elections_of_the_current_user(request, response) {
     const { user_id } = request.params;
 
@@ -195,4 +205,4 @@ function get_elections_of_the_current_user(request, response) {
         .then((elections) => response.status(200).json({ elections }))
         .catch((error) => response.status(500).json({ error }));
 }
-export { create_election, get_elections_of_the_current_user };
+export { create_election, get_elections_of_the_current_user, get_an_election };
