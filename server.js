@@ -14,6 +14,7 @@ import candidateRoutes from './routes/candidateRoutes.js';
 import electorCandidateRoundRoutes from './routes/electorCandidateRoundRoutes.js';
 import candidateRoundRoutes from './routes/candidateRoundRoutes.js';
 import roundRoutes from './routes/roundRoutes.js';
+import emailRoutes from './routes/emailRoutes.js';
 
 dotenv.config();
 
@@ -47,7 +48,7 @@ mongoose
     })
     .then(() => console.log('Connection to MongoDB done'))
     .catch((error) => console.log('Error Connecting to the Database', error));
-        
+
 app.use(passport.initialize());
 app.use(bodyParser.json());
 
@@ -59,6 +60,7 @@ app.use('/api', candidateRoutes);
 app.use('/api', roundRoutes);
 app.use('/api', electorCandidateRoundRoutes);
 app.use('/api', candidateRoundRoutes);
+app.use('/api', emailRoutes);
 
 app.listen(port, () => {
     console.log(`🚀 The server is listening to the port ${port} 🚀`);
