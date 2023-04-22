@@ -19,7 +19,7 @@ function send_email(request, response) {
         from: 'mudibuprecieux@gmail.com',
         to: elector.email,
         subject: 'Jeton de vote',
-        text: `Bonjour ${elector.first_name} ${elector.name} ! Vous venez de recevoir votre jeton de vote pour l'élection qui vient de débuter.Vous devrez le saisir pour confirmer chaque vote que vous ferez. Conservez le bien. | Jeton de vote : ${elector.token_for_vote} || Lien du vote : ${process.env.VOTE_WEB_SITE}/choose_your_candidate/${election_id}`,
+        text: `Bonjour ${elector.first_name} ${elector.name} ! Vous venez de recevoir votre jeton de vote pour l'élection qui vient de débuter.Vous devrez le saisir pour confirmer chaque vote que vous ferez. Conservez le bien. | Jeton de vote : ${elector.token_for_vote} || Lien du vote : ${process.env.VOTE_WEB_SITE}/choose_your_candidate/${election_id} || Lien des résultats : ${process.env.VOTE_WEB_SITE}/result_page/${election_id} `,
     };
 
     transporter.sendMail(mailOptions, function (error, data) {
@@ -31,7 +31,6 @@ function send_email(request, response) {
                 .json({ message: 'Email sent successfully', data });
         }
     });
-
 }
 
 export { send_email };
