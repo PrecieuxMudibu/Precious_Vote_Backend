@@ -1,179 +1,46 @@
-# itm-send-email : API for sending email
+# **Vote API**
+
+Vote is an online voting application that allows any registered user to organize elections by adding voters and candidates (for different positions) through an Excel file.
+
+## Project build with
+
+* **JavaScript**
+* **Express JS**
+* **Mongoose**
+
 
 ## Installation
 
-Clone the repo with the command **git clone**
-Install all dependancies with the command **npm install**
+First clone this repo. Open your terminale and type :
 
-## Project done with
+```bash
+$ git clone https://github.com/PrecieuxMudibu/Precious_Vote_Backend.git
+```
 
-**JavaScript**
-**Express JS**
-**Mongoose**
-**Prettier**
+Once done, go to the project folder by typing :
 
-## How to use this API
+```bash
+cd Precious_Vote_Backend
+```
 
-Create an env file with environment variables like the env.template file.
+Once on the root of the project, type this command to install dependacies :
 
-### Route for register
+```bash
+$ npm install
+```
 
-Route : http://localhost:3000/api/register
-
-You have to do a post request with a JSON object like this.
-
-{
-    "name": "Stark",
-    "first_name": "Tony",
-    "post_name": "Edouard",
-    "email": "tonystark@gmail.com",
-    "password": "L0veyou3*1000"
-}
-
-### Route for login
-
-Route : http://localhost:3000/api/login
-
-You have to do a post request with a JSON object like this.
-
-{
-    "email": "tonystark@gmail.com",
-    "password": "L0veyou3*1000"
-}
-
-### Route for create a post
-
-Route : http://localhost:8000/api/create_post
-
-You have to do a post request with a JSON object like this.
-
-{
-  "name": "Vice-Sécrétaire"
-}
-
-### Route for create an election
-
-Route : http://localhost:8000/api/create_election
-
-You have to do a post request with a JSON object like this.
-
-{
-        "user_id": "642947499e82b0fe63a54758",
-        "name":"Election G3 MAth-info",
-        "description":"lorem 133F,sk,c,,",
-        "first_round_eligibility_criteria": 50,
-        "electors": [
-          {
-            "first_name":"Tony",
-            "name":"Stark"
-          },
-           {
-            "first_name":"Steve",
-            "name":"Rogers"
-          },
-          {
-            "first_name":"Natasha",
-            "name":"Romanoff"
-          },
-          {
-            "first_name":"Clint",
-            "name":"Barton"
-          },
-          {
-            "first_name":"Bruce",
-            "name":"Banner"
-          },
-          {
-            "first_name":"Thor",
-            "name":"Odinson"
-          },
-            {
-            "first_name":"Stephen",
-            "name":"Strange"
-          },
-            {
-            "first_name":"Peter",
-            "name":"Parker"
-          }
-          ],
-        "candidates": [
-            {
-                "post": "President",
-                "people": [
-                     {
-                        "name":"Stark",
-                        "first_name":"Tony",
-                        "picture":"Image"
-                     },
-                     {
-                        "name":"Rogers",
-                        "first_name":"Steve",
-                        "picture":"Image"
-                     },
-                     {
-                        "name":"Danvers",
-                        "first_name":"Carol",
-                        "picture":"Image"
-                     }
-
-                ]
-            },
-            {
-                "post": "Vice-président",
-                "people": [
-                     {
-                        "name":"Parker",
-                        "first_name":"Peter",
-                        "picture":"Image"
-                     },
-                     {
-                        "name":"Bishop",
-                        "first_name":"Kate",
-                        "picture":"Image"
-                     },
-                     {
-                        "name":"Khan",
-                        "first_name":"Kamala",
-                        "picture":"Image"
-                     }
-
-                ]
-            }
-            
-            
-            ]
-}
-
-### Route for get candidates
-
-Route : http://localhost:8000/api/get_candidates/642a0b47bcb981f2fe6484f7/6429f1003ad404877bdbef0c
-
-You have to do a post request with a JSON object like this.
-
-The first parameter in the route is the election_id and the second is the post_id.
+Once done create the `.env` file and config it in reference to `.env.template` file.
 
 
+## Start project
 
+Once the configurations are completed, go back to your terminale and type this command to start the project :
 
+```bash
+$ npm run dev
+```
 
-
-
-
-
-Route : http://localhost:3000/api/send-code-for-change-password
-
-You have to do a post request with a JSON object like this.
-
-  {
-        "lang": "fr",
-        "data": {
-          "name": "Précieux",
-          "email": "mudibuprecieux@gmail.com",
-          "sexe": "Homme",
-          "link": "facebook.com",
-          "code": 1234
-        }
-  }
 
 ## Authors
+
 [Precieux Mudibu](https://github.com/PrecieuxMudibu)
