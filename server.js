@@ -14,11 +14,12 @@ import candidateRoutes from './routes/candidateRoutes.js';
 import electorCandidateRoundRoutes from './routes/electorCandidateRoundRoutes.js';
 import candidateRoundRoutes from './routes/candidateRoundRoutes.js';
 import roundRoutes from './routes/roundRoutes.js';
+import emailRoutes from './routes/emailRoutes.js';
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 
 app.use(
     cors({
@@ -26,6 +27,19 @@ app.use(
         credentials: true,
     })
 );
+
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader(
+//         'Access-Control-Allow-Headers',
+//         'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
+//     );
+//     res.setHeader(
+//         'Access-Control-Allow-Methods',
+//         'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+//     );
+//     next();
+// });
 
 mongoose
     .connect(process.env.MONGO_DB_URL, {
@@ -46,6 +60,7 @@ app.use('/api', candidateRoutes);
 app.use('/api', roundRoutes);
 app.use('/api', electorCandidateRoundRoutes);
 app.use('/api', candidateRoundRoutes);
+app.use('/api', emailRoutes);
 
 app.listen(port, () => {
     console.log(`🚀 The server is listening to the port ${port} 🚀`);
