@@ -63,7 +63,7 @@ function start_round(request, response) {
             const election_id = get_election_id_of_this(round);
 
             Elector.find({ election_id: election_id }).then((electors) => {
-                send_emails_to_all(electors);
+                // send_emails_to_all(electors);
 
                 return response.status(200).json({
                     message:
