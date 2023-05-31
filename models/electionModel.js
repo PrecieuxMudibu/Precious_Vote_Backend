@@ -14,7 +14,7 @@ const electionSchema = new Schema(
             required: true,
             enum: ['Free', 'Premium', 'VIP'],
         },
-        description: { type: String },  
+        description: { type: String },
         picture: { type: String },
         first_round_eligibility_criteria: { type: Number },
         candidates_for_the_second_round: { type: Number },
@@ -23,6 +23,13 @@ const electionSchema = new Schema(
             enum: ['Not yet', 'In progress', 'Completed'],
         },
         two_rounds: { type: Boolean },
+        electors: [
+            {
+                type: String,
+                enum: ['Not yet', 'In progress', 'Completed'],
+                ref: 'Elector',
+            },
+        ],
     },
     { timestamps: true }
 );
