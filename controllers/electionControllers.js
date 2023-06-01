@@ -95,11 +95,12 @@ function add_elector(electorInfo, election) {
         .catch((error) => console.log({ elector: error }));
 }
 
-function create_election(request, response, next) {
+async function create_election(request, response, next) {
     const {
-        user_id,
+        created_by,
         name,
         description,
+        picture,
         status,
         first_round_eligibility_criteria,
         candidates_for_the_second_round,
@@ -118,7 +119,7 @@ function create_election(request, response, next) {
         });
     } else {
         const election = new Election({
-            user_id: user_id,
+            created_by: user_id,
             name: name,
             description: description,
             first_round_eligibility_criteria: first_round_eligibility_criteria,

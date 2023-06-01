@@ -4,7 +4,7 @@ const { Schema, model } = mongoose;
 
 const electionSchema = new Schema(
     {
-        user_id: {
+        created_by: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
         },
@@ -18,16 +18,17 @@ const electionSchema = new Schema(
         picture: { type: String },
         first_round_eligibility_criteria: { type: Number },
         candidates_for_the_second_round: { type: Number },
-        status: {
-            type: String,
-            enum: ['Not yet', 'In progress', 'Completed'],
-        },
         two_rounds: { type: Boolean },
         electors: [
             {
                 type: String,
-                enum: ['Not yet', 'In progress', 'Completed'],
                 ref: 'Elector',
+            },
+        ],
+        posts: [
+            {
+                type: String,
+                ref: 'Post',
             },
         ],
     },
