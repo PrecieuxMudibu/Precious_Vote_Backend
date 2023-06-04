@@ -9,8 +9,20 @@ const postSchema = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Election',
         },
+        candidates: [
+            {
+                type: String,
+                ref: 'Candidate',
+            },
+        ],
+        rounds: [
+            {
+                type: String,
+                ref: 'Round',
+            },
+        ],
     },
-       
+
     { timestamps: true }
 );
 

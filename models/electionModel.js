@@ -13,6 +13,7 @@ const electionSchema = new Schema(
             type: String,
             required: true,
             enum: ['Free', 'Premium', 'VIP'],
+            default: 'Free',
         },
         description: { type: String },
         picture: { type: String },

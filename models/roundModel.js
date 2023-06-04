@@ -12,7 +12,16 @@ const roundSchema = new Schema(
         number: { type: Number },
         begin_date: { type: Date },
         end_date: { type: Date },
-        status: { type: String, enum: ['Not started', 'In progress', 'Completed'] },
+        status: {
+            type: String,
+            enum: ['Not started', 'In progress', 'Completed'],
+        },
+        candidates: [
+            {
+                type: String,
+                ref: 'Candidate',
+            },
+        ],
     },
     { timestamps: true }
 );
