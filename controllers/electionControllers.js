@@ -31,69 +31,69 @@ function generate_random_string(o) {
     }
     return c;
 }
-function add_the_candidate_to_the_round(round, candidate) {
-    const candidateRound = new CandidateRound({
-        candidate_id: candidate._id,
-        round_id: round._id,
-        voice: 0,
-    });
+// function add_the_candidate_to_the_round(round, candidate) {
+//     const candidateRound = new CandidateRound({
+//         candidate_id: candidate._id,
+//         round_id: round._id,
+//         voice: 0,
+//     });
 
-    candidateRound
-        .save()
-        .then((candidateRound) => {})
-        .catch((error) => console.log({ candidate: error }));
-}
+//     candidateRound
+//         .save()
+//         .then((candidateRound) => {})
+//         .catch((error) => console.log({ candidate: error }));
+// }
 
-function add_candidate(candidateInfo, post, election) {
-    const candidate = new Candidate({
-        name: candidateInfo.name,
-        first_name: candidateInfo.first_name,
-        picture: candidateInfo.picture,
+// function add_candidate(candidateInfo, post, election) {
+//     const candidate = new Candidate({
+//         name: candidateInfo.name,
+//         first_name: candidateInfo.first_name,
+//         picture: candidateInfo.picture,
 
-        election_id: election._id,
-        post_id: post._id,
-    });
+//         election_id: election._id,
+//         post_id: post._id,
+//     });
 
-    candidate
-        .save()
-        .then((candidate) => {})
-        .catch((error) => console.log({ candidate: error }));
+//     candidate
+//         .save()
+//         .then((candidate) => {})
+//         .catch((error) => console.log({ candidate: error }));
 
-    return candidate;
-}
-function create_round(number, post) {
-    const round = new Round({
-        post_id: post._id,
-        number: number,
-        status: 'Not started',
-    });
-    round
-        .save()
-        .then((round_1) => {})
-        .catch((error) => console.log({ [round + ' ' + number]: error }));
+//     return candidate;
+// }
+// function create_round(number, post) {
+//     const round = new Round({
+//         post_id: post._id,
+//         number: number,
+//         status: 'Not started',
+//     });
+//     round
+//         .save()
+//         .then((round_1) => {})
+//         .catch((error) => console.log({ [round + ' ' + number]: error }));
 
-    return round;
-}
+//     return round;
+// }
 
-function add_elector(electorInfo, election) {
-    const elector = new Elector({
-        name: electorInfo.name,
-        first_name: electorInfo.first_name,
-        email: electorInfo.email,
-        token_for_vote: generate_random_string({
-            includeUpperCase: true,
-            includeNumbers: true,
-            length: 50,
-            startsWithLowerCase: true,
-        }),
-        election_id: election._id,
-    });
+// function add_elector(electorInfo, election) {
+//     const elector = new Elector({
+//         name: electorInfo.name,
+//         first_name: electorInfo.first_name,
+//         email: electorInfo.email,
+//         token_for_vote: generate_random_string({
+//             includeUpperCase: true,
+//             includeNumbers: true,
+//             length: 50,
+//             startsWithLowerCase: true,
+//         }),
+//         election_id: election._id,
+//     });
 
-    elector
-        .save()
-        .then((elector) => {})
-        .catch((error) => console.log({ elector: error }));
-}
+//     elector
+//         .save()
+//         .then((elector) => {})
+//         .catch((error) => console.log({ elector: error }));
+// }
 
 async function create_election(request, response, next) {
     const {
@@ -101,11 +101,10 @@ async function create_election(request, response, next) {
         name,
         description,
         picture,
-        status,
         first_round_eligibility_criteria,
         candidates_for_the_second_round,
         electors,
-        candidates,
+        posts,
         tariff,
         two_rounds,
     } = request.body;
@@ -119,70 +118,109 @@ async function create_election(request, response, next) {
         });
     } else {
         const election = new Election({
-            created_by: user_id,
-            name: name,
-            description: description,
-            first_round_eligibility_criteria: first_round_eligibility_criteria,
-            candidates_for_the_second_round: candidates_for_the_second_round,
-            status: 'Not yet',
-            tariff: tariff,
-            two_rounds: two_rounds,
+            created_by,
+            name,
+            description,
+            first_round_eligibility_criteria,
+            candidates_for_the_second_round,
+            tariff,
+            two_rounds,
         });
 
-        election
-            .save()
-            .then((election) => {
-                // ADD ELECTORS
-                for (let i = 0; i < electors.length; i++) {
-                    let current_elector = electors[i];
-                    add_elector(current_elector, election);
-                    // TODOS : SEND EMAIL WHICH CONTAIN THE TOKEN FOR VOTE TO THE ELECTORS
-                }
+        const election_created = await election.save();
+        let electors_created_to_add_in_the_electors_properties_of_the_election =
+            [];
 
-                // ADD POST
-                for (let i = 0; i < candidates.length; i++) {
-                    let current_element = candidates[i];
+        // ADD ELECTORS------------------------------------------------------------------------
+        for (let i = 0; i < electors.length; i++) {
+            let current_elector = electors[i];
 
-                    let current_post = current_element.post;
-                    const post = new Post({
-                        election_id: election._id,
-                        name: current_post,
-                    });
-                    post.save()
-                        .then((post) => {
-                            let round_1 = create_round(1, post);
-                            console.log('round_1 >>> ', round_1);
+            const elector = new Elector({
+                name: current_elector.name,
+                first_name: current_elector.first_name,
+                email: current_elector.email,
+                token_for_vote: generate_random_string({
+                    includeUpperCase: true,
+                    includeNumbers: true,
+                    length: 50,
+                    startsWithLowerCase: true,
+                }),
+                election: election_created._id,
+            });
 
-                            // ADD CANDIDATES TO THEIR POST
-                            for (
-                                let j = 0;
-                                j < current_element.people.length;
-                                j++
-                            ) {
-                                let current_candidate =
-                                    current_element.people[j];
-                                const candidate = add_candidate(
-                                    current_candidate,
-                                    post,
-                                    election
-                                );
-                                console.log('candidate >>> ', candidate);
+            const elector_created = await elector.save();
+            electors_created_to_add_in_the_electors_properties_of_the_election.push(
+                elector_created._id
+            );
+        }
+        // ADD ELECTORS------------------------------------------------------------------------
 
-                                // ADD CANDIDATES TO THE LIST OF PARTICIPANT FOR THE ROUND 1
-                                add_the_candidate_to_the_round(
-                                    round_1,
-                                    candidate
-                                );
-                            }
-                        })
-                        .catch((error) => console.log({ post: error }));
-                }
-            })
-            .catch((error) => console.log({ election: error }));
+        // ADD POST------------------------------------------------------------------------------
+        let posts_created_to_add_in_the_electors_properties_of_the_election =
+            [];
+        for (let i = 0; i < posts.length; i++) {
+            const post = new Post({
+                election: election_created._id,
+                name: posts[i].name,
+            });
+            const post_created = await post.save();
+            posts_created_to_add_in_the_electors_properties_of_the_election.push(
+                post_created._id
+            );
+
+            // // TO DO VERIFY IT THE ADD OF CANDIADTES-----------------------
+            // // ---CREATE ROUND------------------
+            // const round_1 = new Round({
+            //     post_id: post._id,
+            //     number: 1,
+            //     status: 'Not started',
+            // });
+            // const round_1_created = await round_1.save();
+            // // ---CREATE ROUND------------------
+
+            // // ---CREATE CANDIDATE------------------
+            // for (let j = 0; j < posts[i].candidates.length; j++) {
+            //     let current_candidate = posts[i].candidates[j];
+            //     // const candidate = add_candidate(
+            //     //     current_candidate,
+            //     //     post,
+            //     //     election
+            //     // );
+
+            //     const candidate = new Candidate({
+            //         name: current_candidate.name,
+            //         first_name: current_candidate.first_name,
+            //         picture: current_candidate.picture,
+            //         election: election_created._id,
+            //         post: post_created._id,
+            //     });
+
+            //     candidate;
+
+            //     // ADD CANDIDATES TO THE LIST OF PARTICIPANT FOR THE ROUND 1
+            //     // add_the_candidate_to_the_round(round_1, candidate);
+            // }
+
+            // TO DO VERIFY IT THE ADD OF CANDIADTES-----------------------
+        }
+
+        const election_final = await Election.findOneAndUpdate(
+            { _id: election_created._id },
+            {
+                electors:
+                    electors_created_to_add_in_the_electors_properties_of_the_election,
+                posts: posts_created_to_add_in_the_electors_properties_of_the_election,
+            },
+            {
+                new: true,
+            }
+        )
+            .populate('posts')
+            .populate('electors');
 
         return response.status(201).json({
             message: 'Votre élection a été créée avec succès.',
-            election,
+            election_final,
         });
     }
 }
@@ -190,7 +228,7 @@ async function create_election(request, response, next) {
 function get_an_election(request, response) {
     const { election_id } = request.params;
 
-    const query = { _id:  election_id };
+    const query = { _id: election_id };
 
     Election.findOne(query)
         .then((election) => response.status(200).json({ election }))

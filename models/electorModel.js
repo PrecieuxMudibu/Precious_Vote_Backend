@@ -4,7 +4,7 @@ const { Schema, model } = mongoose;
 
 const electorSchema = new Schema(
     {
-        election_id: {
+        election: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Election',
         },
