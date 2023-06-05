@@ -22,13 +22,13 @@ const electionSchema = new Schema(
         two_rounds: { type: Boolean },
         electors: [
             {
-                type: String,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: 'Elector',
             },
         ],
         posts: [
             {
-                type: String,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: 'Post',
             },
         ],

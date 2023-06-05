@@ -170,38 +170,60 @@ async function create_election(request, response, next) {
 
             // // TO DO VERIFY IT THE ADD OF CANDIADTES-----------------------
             // // ---CREATE ROUND------------------
-            // const round_1 = new Round({
-            //     post_id: post._id,
-            //     number: 1,
-            //     status: 'Not started',
-            // });
-            // const round_1_created = await round_1.save();
+            const round_1 = new Round({
+                post: post_created._id,
+                number: 1,
+                status: 'Not started',
+            });
+            const round_1_created = await round_1.save();
             // // ---CREATE ROUND------------------
 
             // // ---CREATE CANDIDATE------------------
-            // for (let j = 0; j < posts[i].candidates.length; j++) {
-            //     let current_candidate = posts[i].candidates[j];
-            //     // const candidate = add_candidate(
-            //     //     current_candidate,
-            //     //     post,
-            //     //     election
-            //     // );
+            let candidates_created_to_add_in_the_electors_properties_of_the_election =
+                [];
+            for (let j = 0; j < posts[i].candidates.length; j++) {
+                let current_candidate = posts[i].candidates[j];
 
-            //     const candidate = new Candidate({
-            //         name: current_candidate.name,
-            //         first_name: current_candidate.first_name,
-            //         picture: current_candidate.picture,
-            //         election: election_created._id,
-            //         post: post_created._id,
-            //     });
+                const candidate = new Candidate({
+                    name: current_candidate.name,
+                    first_name: current_candidate.first_name,
+                    picture: current_candidate.picture,
+                    election: election_created._id,
+                    post: post_created._id,
+                });
+                const candidate_created = await candidate.save();
+                candidates_created_to_add_in_the_electors_properties_of_the_election.push(
+                    candidate_created._id
+                );
+            }
 
-            //     candidate;
+            //  ADD THE CANDIDATES ID TO THE CANDIDATES PROPERTIES OF A ROUND
+            await Round.findOneAndUpdate(
+                { _id: round_1_created._id },
+                {
+                    candidates:
+                        candidates_created_to_add_in_the_electors_properties_of_the_election,
+                    rounds: [round_1_created._id],
+                },
+                {
+                    new: true,
+                }
+            );
+            //  ADD THE CANDIDATES ID TO THE CANDIDATES PROPERTIES OF A ROUND
 
-            //     // ADD CANDIDATES TO THE LIST OF PARTICIPANT FOR THE ROUND 1
-            //     // add_the_candidate_to_the_round(round_1, candidate);
-            // }
-
-            // TO DO VERIFY IT THE ADD OF CANDIADTES-----------------------
+            //  ADD THE CANDIDATES ID TO THE CANDIDATES PROPERTIES OF A POST
+            await Post.findOneAndUpdate(
+                { _id: post_created._id },
+                {
+                    candidates:
+                        candidates_created_to_add_in_the_electors_properties_of_the_election,
+                    rounds: [round_1_created._id],
+                },
+                {
+                    new: true,
+                }
+            );
+            //  ADD THE CANDIDATES ID TO THE CANDIDATES PROPERTIES OF A POST
         }
 
         const election_final = await Election.findOneAndUpdate(
@@ -215,12 +237,16 @@ async function create_election(request, response, next) {
                 new: true,
             }
         )
-            .populate('posts')
+            // .populate('posts')
+            .populate({
+                path: 'posts',
+                populate: [{ path: 'candidates' }, { path: 'rounds' }],
+            })
             .populate('electors');
 
         return response.status(201).json({
             message: 'Votre élection a été créée avec succès.',
-            election_final,
+            election: election_final,
         });
     }
 }

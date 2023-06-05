@@ -11,13 +11,13 @@ const postSchema = new Schema(
         },
         candidates: [
             {
-                type: String,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: 'Candidate',
             },
         ],
         rounds: [
             {
-                type: String,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: 'Round',
             },
         ],
