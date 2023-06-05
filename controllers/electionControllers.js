@@ -31,69 +31,6 @@ function generate_random_string(o) {
     }
     return c;
 }
-// function add_the_candidate_to_the_round(round, candidate) {
-//     const candidateRound = new CandidateRound({
-//         candidate_id: candidate._id,
-//         round_id: round._id,
-//         voice: 0,
-//     });
-
-//     candidateRound
-//         .save()
-//         .then((candidateRound) => {})
-//         .catch((error) => console.log({ candidate: error }));
-// }
-
-// function add_candidate(candidateInfo, post, election) {
-//     const candidate = new Candidate({
-//         name: candidateInfo.name,
-//         first_name: candidateInfo.first_name,
-//         picture: candidateInfo.picture,
-
-//         election_id: election._id,
-//         post_id: post._id,
-//     });
-
-//     candidate
-//         .save()
-//         .then((candidate) => {})
-//         .catch((error) => console.log({ candidate: error }));
-
-//     return candidate;
-// }
-// function create_round(number, post) {
-//     const round = new Round({
-//         post_id: post._id,
-//         number: number,
-//         status: 'Not started',
-//     });
-//     round
-//         .save()
-//         .then((round_1) => {})
-//         .catch((error) => console.log({ [round + ' ' + number]: error }));
-
-//     return round;
-// }
-
-// function add_elector(electorInfo, election) {
-//     const elector = new Elector({
-//         name: electorInfo.name,
-//         first_name: electorInfo.first_name,
-//         email: electorInfo.email,
-//         token_for_vote: generate_random_string({
-//             includeUpperCase: true,
-//             includeNumbers: true,
-//             length: 50,
-//             startsWithLowerCase: true,
-//         }),
-//         election_id: election._id,
-//     });
-
-//     elector
-//         .save()
-//         .then((elector) => {})
-//         .catch((error) => console.log({ elector: error }));
-// }
 
 async function create_election(request, response, next) {
     const {
@@ -237,7 +174,6 @@ async function create_election(request, response, next) {
                 new: true,
             }
         )
-            // .populate('posts')
             .populate({
                 path: 'posts',
                 populate: [{ path: 'candidates' }, { path: 'rounds' }],
@@ -257,6 +193,11 @@ function get_an_election(request, response) {
     const query = { _id: election_id };
 
     Election.findOne(query)
+        .populate({
+            path: 'posts',
+            populate: [{ path: 'candidates' }, { path: 'rounds' }],
+        })
+        .populate('electors')
         .then((election) => response.status(200).json({ election }))
         .catch((error) => response.status(500).json({ error }));
 }
@@ -267,6 +208,11 @@ function get_elections_of_the_current_user(request, response) {
     const query = { user_id: user_id };
 
     Election.find(query)
+        .populate({
+            path: 'posts',
+            populate: [{ path: 'candidates' }, { path: 'rounds' }],
+        })
+        .populate('electors')
         .then((elections) => response.status(200).json({ elections }))
         .catch((error) => response.status(500).json({ error }));
 }
