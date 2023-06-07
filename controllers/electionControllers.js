@@ -105,7 +105,6 @@ async function create_election(request, response, next) {
                 post_created._id
             );
 
-            // // TO DO VERIFY IT THE ADD OF CANDIADTES-----------------------
             // // ---CREATE ROUND------------------
             const round_1 = new Round({
                 post: post_created._id,
