@@ -6,7 +6,9 @@ import CandidateRound from '../models/candidateRoundModel.js';
 import { send_email_to } from '../event/email.js';
 
 function get_election_id_of_this(round) {
-    const election_id = round.post_id.election_id;
+    console.log('round ICI', round);
+
+    const election_id = round.post.election;
     return election_id;
 }
 
@@ -51,28 +53,31 @@ function send_emails_to_all(electors) {
     }
 }
 
-function start_round(request, response) {
+async function start_round(request, response) {
     const { round_id } = request.params;
 
     const filter = { _id: round_id };
     const update = { status: 'In progress', begin_date: Date.now() };
 
-    Round.findOneAndUpdate(filter, update, { new: true })
-        .populate('post_id')
-        .then((round) => {
-            const election_id = get_election_id_of_this(round);
+    try {
+        const round = await Round.findOneAndUpdate(filter, update, {
+            new: true,
+        }).populate('post');
 
-            Elector.find({ election_id: election_id }).then((electors) => {
-                // send_emails_to_all(electors);
+        const election_id = get_election_id_of_this(round);
 
-                return response.status(200).json({
-                    message:
-                        'Le round a commencé et les électeurs on été notifiés.',
-                    round,
-                });
-            });
-        })
-        .catch((error) => response.status(400).json({ error }));
+        //----- TODO : SEND EMAIL TO ALL ELECTORS
+        const electors = await Elector.find({ election_id: election_id });
+        // send_emails_to_all(electors);
+        //----- TODO : SEND EMAIL TO ALL ELECTORS
+
+        return response.status(200).json({
+            message: 'Le round a commencé et les électeurs on été notifiés.',
+            round,
+        });
+    } catch (error) {
+        return response.status(400).json({ error });
+    }
 }
 
 function close_round(request, response) {
