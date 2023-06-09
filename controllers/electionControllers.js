@@ -128,23 +128,45 @@ async function create_election(request, response, next) {
                     post: post_created._id,
                 });
                 const candidate_created = await candidate.save();
+
                 candidates_created_to_add_in_the_electors_properties_of_the_election.push(
-                    candidate_created._id
+                    { voices: 0, candidate: candidate_created._id }
                 );
+
+                const round_to_add_the_candidate = await Round.findOne({
+                    _id: round_1_created._id,
+                });
+                console.log(
+                    'round_to_add_the_candidate',
+                    round_to_add_the_candidate
+                );
+                if (round_to_add_the_candidate) {
+                    await Round.findOneAndUpdate(
+                        { _id: round_to_add_the_candidate._id },
+                        {
+                            candidates: [
+                                ...round_to_add_the_candidate.candidates,
+                                { voices: 0, candidate: candidate_created._id },
+                            ],
+                        },
+                        {
+                            new: true,
+                        }
+                    );
+                }
             }
 
             //  ADD THE CANDIDATES ID TO THE CANDIDATES PROPERTIES OF A ROUND
-            await Round.findOneAndUpdate(
-                { _id: round_1_created._id },
-                {
-                    candidates:
-                        candidates_created_to_add_in_the_electors_properties_of_the_election,
-                    rounds: [round_1_created._id],
-                },
-                {
-                    new: true,
-                }
-            );
+            // await Round.findOneAndUpdate(
+            //     { _id: round_1_created._id },
+            //     {
+            //         candidates:
+            //             candidates_created_to_add_in_the_electors_properties_of_the_election,
+            //     },
+            //     {
+            //         new: true,
+            //     }
+            // );
             //  ADD THE CANDIDATES ID TO THE CANDIDATES PROPERTIES OF A ROUND
 
             //  ADD THE CANDIDATES ID TO THE CANDIDATES PROPERTIES OF A POST

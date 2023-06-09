@@ -17,10 +17,13 @@ const roundSchema = new Schema(
             enum: ['Not started', 'In progress', 'Completed'],
         },
         candidates: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Candidate',
-            },
+            new Schema({
+                voices: { type: mongoose.Schema.Types.Number, default: 0 },
+                candidate: {
+                    type: mongoose.Schema.Types.Array,
+                    ref: 'Candidate',
+                },
+            }),
         ],
     },
     { timestamps: true }
