@@ -6,8 +6,6 @@ import CandidateRound from '../models/candidateRoundModel.js';
 import { send_email_to } from '../event/email.js';
 
 function get_election_id_of_this(round) {
-    console.log('round ICI', round);
-
     const election_id = round.post.election;
     return election_id;
 }
@@ -60,21 +58,39 @@ async function start_round(request, response) {
     const update = { status: 'In progress', begin_date: Date.now() };
 
     try {
-        const round = await Round.findOneAndUpdate(filter, update, {
-            new: true,
-        }).populate('post');
+        const round = await Round.findOne(filter);
+        console.log('round ICI', round);
 
-        const election_id = get_election_id_of_this(round);
+        if (round.status === 'Not started') {
+            const round_updated = await Round.findOneAndUpdate(filter, update, {
+                new: true,
+            }).populate('post');
 
-        //----- TODO : SEND EMAIL TO ALL ELECTORS
-        const electors = await Elector.find({ election_id: election_id });
-        // send_emails_to_all(electors);
-        //----- TODO : SEND EMAIL TO ALL ELECTORS
+            const election_id = get_election_id_of_this(round_updated);
 
-        return response.status(200).json({
-            message: 'Le round a commencé et les électeurs on été notifiés.',
-            round,
-        });
+            //----- TODO : SEND EMAIL TO ALL ELECTORS
+            const electors = await Elector.find({ election_id: election_id });
+            // send_emails_to_all(electors);
+            //----- TODO : SEND EMAIL TO ALL ELECTORS
+
+            return response.status(200).json({
+                message:
+                    'Le round a commencé et les électeurs on été notifiés.',
+                round: round_updated,
+            });
+        } else {
+            if (round.status === 'In progress') {
+                return response.status(405).json({
+                    message:
+                        'Vous ne pouvez pas commencer ce round. Ce round est en cours',
+                });
+            } else {
+                return response.status(405).json({
+                    message:
+                        'Vous ne pouvez pas commencer ce round. Ce round est terminé',
+                });
+            }
+        }
     } catch (error) {
         return response.status(400).json({ error });
     }
