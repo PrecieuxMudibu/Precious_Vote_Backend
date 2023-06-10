@@ -128,26 +128,29 @@ async function create_election(request, response, next) {
                     post: post_created._id,
                 });
                 const candidate_created = await candidate.save();
+                // PAS DE PROBLEME AU DESSUS
 
                 candidates_created_to_add_in_the_electors_properties_of_the_election.push(
-                    { voices: 0, candidate: candidate_created._id }
+                    {
+                        _id: candidate_created._doc._id,
+                        voices: 0,
+                        candidate: candidate_created._doc._id,
+                    }
                 );
 
+                console.log(
+                    'UPDATE',
+                    candidates_created_to_add_in_the_electors_properties_of_the_election
+                );
                 const round_to_add_the_candidate = await Round.findOne({
                     _id: round_1_created._id,
                 });
-                console.log(
-                    'round_to_add_the_candidate',
-                    round_to_add_the_candidate
-                );
                 if (round_to_add_the_candidate) {
                     await Round.findOneAndUpdate(
                         { _id: round_to_add_the_candidate._id },
                         {
-                            candidates: [
-                                ...round_to_add_the_candidate.candidates,
-                                { voices: 0, candidate: candidate_created._id },
-                            ],
+                            candidates:
+                                candidates_created_to_add_in_the_electors_properties_of_the_election,
                         },
                         {
                             new: true,
