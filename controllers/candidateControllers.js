@@ -15,7 +15,7 @@ function get_all_candidates_for_the_post(request, response, next) {
 }
 
 async function vote_candidate(request, response) {
-    const { candidate_id, token_for_vote } = request.body;
+    const { candidate_id, round_id, token_for_vote } = request.body;
 
     try {
         const elector = await Elector.findOne({
@@ -35,91 +35,84 @@ async function vote_candidate(request, response) {
                     message: 'Aucun candidat trouvé avec cet id',
                 });
             } else {
-                const rounds_for_this_post = await Round.find({
-                    post: candidate_to_vote.post,
-                })
-                    .populate({
-                        path: 'post',
-                    })
-                    .populate({ path: 'candidates' });
+                const round = await Round.findOne({
+                    _id: round_id,
+                }).populate({ path: 'candidates.candidate' });
 
-                console.log('rounds_for_this_post', rounds_for_this_post);
-
-                rounds_for_this_post.forEach((candidate) => {
-                    console.log('candidate ICI', candidate);
-                    const { name, email, roundNumber } = candidate; // Codes ici
-                });
-                const round_1 = rounds_for_this_post.filter(
-                    (round) => round.number == 1
-                )[0];
-
-                const round_2 = rounds_for_this_post.filter(
-                    (round) => round.number == 2
-                )[0];
-
-                if (round_1.status === 'In progress') {
+                if (round.status === 'In progress') {
                     // SAVE THE VOTE
+
                     const this_vote_exists = await ElectorCandidateRound.find({
                         elector: elector._id,
-                        round: round_1._id,
+                        round: round._id,
                     });
                     if (this_vote_exists.length == 0) {
                         const vote = new ElectorCandidateRound({
                             elector: elector._id,
                             candidate: candidate_to_vote._id,
-                            round: round_1._id,
+                            round: round._id,
                         });
                         // TO DO : SAVED THE VOTE
                         vote.save(vote)
-                            .then((vote) => {
-                                // const round
-                                console.log(3);
-                                // CandidateRound.findOneAndUpdate(
-                                //     {
-                                //         candidate_id: candidate._id,
-                                //         round_id: round_1._id,
-                                //     },
-                                //     {
-                                //         $inc: {
-                                //             voices: 1,
-                                //         },
-                                //     },
-                                //     {
-                                //         new: true,
-                                //     }
-                                // )
-                                //     .then(() =>
-                                //         response.status(201).json({
-                                //             message:
-                                //                 'Votre vote a été enregistré avec succès',
-                                //         })
-                                //     )
-                                //     .catch((error) =>
-                                //         response.status(500).json({
-                                //             error,
-                                //         })
-                                // );
-                                // }
+                            .then(async (vote) => {
+                                const { candidates } = round;
+
+                                // Icrease the number of voices of the voted candidates
+                                const candidates_updated = candidates.map(
+                                    (item) => {
+                                        if (
+                                            item._id.toString() ===
+                                            candidate_to_vote._id.toString()
+                                        ) {
+                                            return {
+                                                ...item._doc,
+                                                voices: item._doc.voices + 1,
+                                            };
+                                        }
+                                        return item;
+                                    }
+                                );
+
+                                const round_updated =
+                                    await Round.findOneAndUpdate(
+                                        { _id: round_id },
+                                        { candidates: candidates_updated },
+                                        { new: true }
+                                    ).populate({
+                                        path: 'candidates.candidate',
+                                    });
+
+                                return response.status(201).json({
+                                    message:
+                                        'Votre vote a été enregistré avec succès',
+                                    round: round_updated,
+                                });
                             })
                             .catch((error) =>
                                 response.status(500).json({ error })
                             );
                     } else {
-                        // THE ELECTOR HAS VOTED BEFORE FOR  THIS ROUND AND THIS POST
                         return response.status(200).json({
                             message: 'Vous avez déjà voté',
                         });
                     }
                 } else {
-                    //  Code 403 : Access refused
-                    response.status(403).json({
-                        message:
-                            "Vous ne pouvez pas voter. Le round 1 est soit terminé, soit il n'a pas encore commencé.",
-                    });
+                    if (round.status === 'Not started') {
+                        //  Code 405 : Access not allowed
+                        response.status(405).json({
+                            message: `Vous ne pouvez pas voter. Le round ${round.number} n'a pas encore commencé.`,
+                        });
+                    } else {
+                        //  Code 405 : Access not allowed
+                        response.status(405).json({
+                            message: `Vous ne pouvez pas voter. Le round ${round.number} est déjà terminé.`,
+                        });
+                    }
                 }
             }
         }
     } catch (error) {
+        console.log('error', error);
         return response.status(400).json({ error });
     }
 
