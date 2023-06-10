@@ -200,7 +200,13 @@ async function create_election(request, response, next) {
         )
             .populate({
                 path: 'posts',
-                populate: [{ path: 'candidates' }, { path: 'rounds' }],
+                populate: [
+                    { path: 'candidates' },
+                    {
+                        path: 'rounds',
+                        populate: { path: 'candidates.candidate' },
+                    },
+                ],
             })
             .populate('electors');
 
