@@ -4,6 +4,8 @@ import Election from '../models/electionModel.js';
 import CandidateRound from '../models/candidateRoundModel.js';
 
 import { send_email_to } from '../event/email.js';
+import { sortArrayDesc } from '../helpers/index.js';
+import Post from '../models/postModel.js';
 
 function get_election_id_of_this(round) {
     const election_id = round.post.election;
@@ -140,7 +142,7 @@ async function close_round(request, response) {
                     let candidates_eligibles_for_second_rounds =
                         round_updated.candidates.map((item) => {
                             if (
-                                item.voices >= 1
+                                item.voices >= 10
                                 // first_round_eligibility_criteria_voices
                             ) {
                                 return { ...item._doc, voices: 0 };
@@ -155,10 +157,74 @@ async function close_round(request, response) {
 
                     console.log('ICI', candidates_eligibles_for_second_rounds);
 
-                    return response.status(200).json({
-                        message: `Le round 1 est terminé. Aucun candidat n'a réalisé le score requis pour être élu au premier tour. Les`,
-                        round_updated,
-                    });
+                    if (candidates_eligibles_for_second_rounds.length == 1) {
+                        return response.status(200).json({
+                            message: `Le round 1 est terminé. Le vainqueur est ${candidates_eligibles_for_second_rounds[0].candidate.first_name} ${candidates_eligibles_for_second_rounds[0].candidate.name}`,
+                            round,
+                        });
+                    } else if (
+                        candidates_eligibles_for_second_rounds.length == 0
+                    ) {
+                        const candidates_sorted = sortArrayDesc(
+                            round_updated.candidates
+                        );
+                        // recupérer les premiers candidats en fonction du candidates_for_the_second_round de l'election
+                        const first_candidates = candidates_sorted.slice(
+                            0,
+                            round_updated.post.election
+                                .candidates_for_the_second_round
+                        );
+
+                        // Create a round 2
+                        const round_2 = new Round({
+                            post: post_id_of_the_round_1,
+                            number: 2,
+                            status: 'Not started',
+                            candidates: first_candidates,
+                        });
+                        const round_2_created = await round_2.save();
+
+                        // Add the new round created to his post
+                        const round_updated = await Post.findOneAndUpdate(
+                            { _id: post_id_of_the_round_1 },
+                            {
+                                rounds: [
+                                    ...round_updated.post.rounds,
+                                    round_2_created._id,
+                                ],
+                            },
+                            {
+                                new: true,
+                            }
+                        );
+
+                        return response.status(200).json({
+                            message: `Le round 1 est terminé. Aucun candidat n'a réalisé le score requis pour être élu au premier tour. Les ${round_updated.post.election.candidates_for_the_second_round} candidats ayant le plus grand score ont été reconduits au deuxième tour.`,
+                            round,
+                        });
+
+                        console.log('ICI 2', candidates_sorted);
+                        console.log('ICI 3', first_candidates);
+                    } else {
+                        // Create a round 2
+                        const round_2 = new Round({
+                            post: post_id_of_the_round_1,
+                            number: 2,
+                            status: 'Not started',
+                            candidates: candidates_eligibles_for_second_rounds,
+                        });
+                        const round_2_created = await round_2.save();
+
+                        return response.status(200).json({
+                            message: `Le round 1 est terminé. ${candidates_eligibles_for_second_rounds.length} candidats ont réalisé des scores dépassant le critère d'éligibilité au premier tour. Ces ${candidates_eligibles_for_second_rounds.length} candidats ont été reconduits au deuxième tour.`,
+                            round,
+                        });
+                    }
+
+                    // return response.status(200).json({
+                    //     message: `Le round 1 est terminé. Aucun candidat n'a réalisé le score requis pour être élu au premier tour. Les`,
+                    //     round_updated,
+                    // });
 
                     // CandidateRound.find({
                     //     round_id: round._id,
