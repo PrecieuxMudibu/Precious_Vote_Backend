@@ -11,3 +11,5 @@ Vote is an online voting application that allows any registered user to organize
 -   **Add the candidates in the round model instead of candidateRound**
 
 // TODO : CLOSE THE ROUND
+    // TEst the else and else if case
+    // Close the round 2
