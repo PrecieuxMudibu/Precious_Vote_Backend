@@ -220,101 +220,6 @@ async function close_round(request, response) {
                             round,
                         });
                     }
-
-                    // return response.status(200).json({
-                    //     message: `Le round 1 est terminé. Aucun candidat n'a réalisé le score requis pour être élu au premier tour. Les`,
-                    //     round_updated,
-                    // });
-
-                    // CandidateRound.find({
-                    //     round_id: round._id,
-                    //     voices: {
-                    //         // $gt: 70,
-                    //         // $gt: 3,
-                    //         $gt: first_round_eligibility_criteria_voices,
-                    //     },
-                    // })
-                    //     .populate('candidate_id')
-                    //     .then((candidates_rounds) => {
-                    //         // 🚀 S'il y en a un, pas besoin de deuxième round on ne commence pas le deuxième tour pour ce poste
-                    //         if (candidates_rounds.length == 1) {
-                    //             return response.status(200).json({
-                    //                 message: `Le round 1 est terminé. Le vainqueur est ${candidates_rounds[0].candidate_id.first_name} ${candidates_rounds[0].candidate_id.name}`,
-                    //                 round,
-                    //             });
-                    //         }
-
-                    //         // 🚀 S'il n'y en aucun, on récupère les "n" candidats ayant le plus de voix tels que défini dans le "candidates_to_be_retained_in_the_second_round"
-                    //         else if (candidates_rounds.length == 0) {
-                    //             console.log(
-                    //                 'AUCUN CANDIDAT candidates_rounds>>',
-                    //                 candidates_rounds
-                    //             );
-                    //             CandidateRound.find({
-                    //                 round_id: round._id,
-                    //             })
-                    //                 .sort({ voices: -1 }) // Tri décroissant
-                    //                 .limit(
-                    //                     election.candidates_for_the_second_round
-                    //                 ) // Recuperation des n premiers candidats
-                    //                 .then((candidates_rounds) => {
-                    //                     {
-                    //                         let round_2 = create_round(2, {
-                    //                             _id: post_id_of_the_round_1,
-                    //                         });
-                    //                         // // Ajout des n premiers candidats au round 2
-                    //                         for (
-                    //                             let i = 0;
-                    //                             i < candidates_rounds.length;
-                    //                             i++
-                    //                         ) {
-                    //                             const current_candidate =
-                    //                                 candidates_rounds[i];
-                    //                             add_the_candidate_to_the_round(
-                    //                                 round_2,
-                    //                                 current_candidate
-                    //                             );
-                    //                         }
-                    //                         return response.status(200).json({
-                    //                             message: `Le round 1 est terminé. Aucun candidat n'a réalisé le score requis pour être élu au premier tour. Les ${election.candidates_for_the_second_round} candidats ayant le plus grand score ont été reconduits au deuxième tour.`,
-                    //                             round,
-                    //                         });
-                    //                     }
-                    //                 })
-                    //                 .catch((error) =>
-                    //                     response.status(500).json({ error })
-                    //                 );
-                    //         }
-                    //         // 🚀 S'il y en a deux (ou trois, ou quatre, etc.), on crée le deuxième tour pour ce poste avec ces deux (trois ou quatre) candidats
-                    //         else {
-                    //             let round_2 = create_round(2, {
-                    //                 _id: post_id_of_the_round_1,
-                    //             });
-                    //             // // Ajout au deuxième round de tous les candidats  qui ont dépassé le first_round_eligibility_criteria_voices
-                    //             console.log(
-                    //                 'candidates_rounds DEPASSE LE SCORE>>>',
-                    //                 candidates_rounds
-                    //             );
-
-                    //             for (
-                    //                 let i = 0;
-                    //                 i < candidates_rounds.length;
-                    //                 i++
-                    //             ) {
-                    //                 const current_candidate =
-                    //                     candidates_rounds[i];
-                    //                 add_the_candidate_to_the_round(
-                    //                     round_2,
-                    //                     current_candidate
-                    //                 );
-                    //             }
-
-                    //             return response.status(200).json({
-                    //                 message: `Le round 1 est terminé. ${candidates_rounds.length} candidats ont réalisé des scores dépassant le critère d'éligibilité au premier tour. Ces ${candidates_rounds.length} candidats ont été reconduits au deuxième tour.`,
-                    //                 round,
-                    //             });
-                    //         }
-                    //     });
                 } else {
                     return response.status(200).json({
                         message: 'Le round est terminé.',
@@ -327,11 +232,6 @@ async function close_round(request, response) {
                     round: round_updated,
                 });
             }
-
-            // return response.status(200).json({
-            //     message: `Le round 1 est terminé.`,
-            //     round: round_updated,
-            // });
         } else {
             return response.status(200).json({
                 message:
