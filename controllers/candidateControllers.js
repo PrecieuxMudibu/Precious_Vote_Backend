@@ -92,7 +92,7 @@ async function vote_candidate(request, response) {
                                 response.status(500).json({ error })
                             );
                     } else {
-                        return response.status(200).json({
+                        return response.status(405).json({
                             message: 'Vous avez déjà voté',
                         });
                     }

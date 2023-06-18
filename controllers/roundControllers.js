@@ -142,8 +142,9 @@ async function close_round(request, response) {
                     let candidates_eligibles_for_second_rounds =
                         round_updated.candidates.map((item) => {
                             if (
-                                item.voices >= 10
-                                // first_round_eligibility_criteria_voices
+                                // item.voices >= 10
+                                item.voices >=
+                                first_round_eligibility_criteria_voices
                             ) {
                                 return { ...item._doc, voices: 0 };
                             }
@@ -154,8 +155,6 @@ async function close_round(request, response) {
                         candidates_eligibles_for_second_rounds.filter(
                             (item) => item
                         );
-
-                    console.log('ICI', candidates_eligibles_for_second_rounds);
 
                     if (candidates_eligibles_for_second_rounds.length == 1) {
                         return response.status(200).json({
@@ -169,11 +168,16 @@ async function close_round(request, response) {
                             round_updated.candidates
                         );
                         // recupérer les premiers candidats en fonction du candidates_for_the_second_round de l'election
-                        const first_candidates = candidates_sorted.slice(
-                            0,
-                            round_updated.post.election
-                                .candidates_for_the_second_round
-                        );
+                        const first_candidates = candidates_sorted
+                            .slice(
+                                0,
+                                round_updated.post.election
+                                    .candidates_for_the_second_round
+                            )
+                            .map((item) => ({
+                                ...item._doc,
+                                voices: 0,
+                            }));
 
                         // Create a round 2
                         const round_2 = new Round({
@@ -202,9 +206,6 @@ async function close_round(request, response) {
                             message: `Le round 1 est terminé. Aucun candidat n'a réalisé le score requis pour être élu au premier tour. Les ${round_updated.post.election.candidates_for_the_second_round} candidats ayant le plus grand score ont été reconduits au deuxième tour.`,
                             round: round_updated,
                         });
-
-                        console.log('ICI 2', candidates_sorted);
-                        console.log('ICI 3', first_candidates);
                     } else {
                         // Create a round 2
                         const round_2 = new Round({
@@ -233,10 +234,10 @@ async function close_round(request, response) {
                 });
             }
         } else {
-            return response.status(200).json({
+            return response.status(405).json({
                 message:
-                    "Vous ne pouvez pas arrêter ce round. Soit il n'a pas encore commencé, soit il est déjà",
-                round: round_updated,
+                    "Vous ne pouvez pas arrêter ce round. Soit il n'a pas encore commencé, soit il est déjà terminé.",
+                round,
             });
         }
     } catch (error) {}
