@@ -72,7 +72,16 @@ async function start_round(request, response) {
 
             //----- TODO : SEND EMAIL TO ALL ELECTORS
             const electors = await Elector.find({ election_id: election_id });
-            // send_emails_to_all(electors);
+            console.log('electors ICI', electors);
+
+            // for (let i = 0; i < electors.length; i++) {
+            //     send_email_to(
+            //         electors[i].email,
+            //         'Jeton de vote',
+            //         `Bonjour ${electors[i].first_name} ${electors[i].name} ! Vous venez de recevoir votre jeton de vote pour l'élection qui vient de débuter.Vous devrez le saisir pour confirmer chaque vote que vous ferez. Conservez le bien. | Jeton de vote : ${electors[i].token_for_vote} || Lien du vote : ${process.env.VOTE_WEB_SITE}/choose_your_candidate/${election_id} || Lien des résultats : ${process.env.VOTE_WEB_SITE}/result_page/${election_id} `
+            //     );
+            // }
+            send_emails_to_all(electors);
             //----- TODO : SEND EMAIL TO ALL ELECTORS
 
             return response.status(200).json({
