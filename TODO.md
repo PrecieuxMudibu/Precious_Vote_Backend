@@ -10,5 +10,4 @@ Vote is an online voting application that allows any registered user to organize
 -   **Add the candidates property in the post model**
 -   **Add the candidates in the round model instead of candidateRound**
 
-// TODO : CLOSE THE ROUND
-// TESTER TOUS LES CAS DU LE CLOSE ROUND
+// TODO : ADD AUTHORIZATION FOR CREATE ELECTION
