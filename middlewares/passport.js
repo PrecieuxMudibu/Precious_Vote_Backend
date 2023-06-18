@@ -15,7 +15,7 @@ opts.secretOrKey = secret;
 const auth_middleware = passport.use(
     new JwtStrategy(opts, function (jwt_payload, done) {
         console.log(jwt_payload);
-        User.findOne({ id: jwt_payload.id }, function (err, user) {
+        User.findOne({ _id: jwt_payload.id }, function (err, user) {
             if (err) {
                 return done(err, false);
             }
