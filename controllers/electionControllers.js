@@ -235,7 +235,7 @@ function get_an_election(request, response) {
 function get_elections_of_the_current_user(request, response) {
     const { user_id } = request.params;
 
-    const query = { user_id: user_id };
+    const query = { created_by: user_id };
 
     Election.find(query)
         .populate({
