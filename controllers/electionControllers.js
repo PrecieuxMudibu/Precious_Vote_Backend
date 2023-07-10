@@ -225,7 +225,10 @@ function get_an_election(request, response) {
     Election.findOne(query)
         .populate({
             path: 'posts',
-            populate: [{ path: 'candidates' }, { path: 'rounds' }],
+            populate: [
+                { path: 'candidates' },
+                { path: 'rounds', populate: { path: 'candidates.candidate' } },
+            ],
         })
         .populate('electors')
         .then((election) => response.status(200).json({ election }))
