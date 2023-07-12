@@ -15,6 +15,7 @@ import electorCandidateRoundRoutes from './routes/electorCandidateRoundRoutes.js
 import candidateRoundRoutes from './routes/candidateRoundRoutes.js';
 import roundRoutes from './routes/roundRoutes.js';
 import emailRoutes from './routes/emailRoutes.js';
+import tokenRoutes from './routes/tokenRoutes.js';
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.use(passport.initialize());
 app.use(bodyParser.json());
 
 app.use('/api', userRoutes);
+app.use('/api', tokenRoutes);
 
 // The routes below require authentication
 app.use(auth_middleware.authenticate('jwt', { session: false }));
