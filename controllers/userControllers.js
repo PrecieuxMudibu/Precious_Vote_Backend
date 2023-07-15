@@ -109,4 +109,26 @@ function get_user(request, response) {
         .catch((error) => response.status(500).json({ error }));
 }
 
-export { register, login, get_user };
+function update_user(request, response) {
+    const { _id } = request.params;
+    const { name, email, password, profile_picture } = request.body;
+
+    if (name && email && profile_picture) {
+        User.findOneAndUpdate(
+            _id,
+            { name, email, password, profile_picture },
+            {
+                new: true,
+            }
+        )
+            .then((user) =>
+                response.status(200).json({
+                    user,
+                })
+            )
+            .catch((error) => response.status(500).json({ error }));
+    }
+
+    const query = { _id: _id };
+}
+export { register, login, get_user, update_user };
