@@ -3,7 +3,6 @@ import Elector from '../models/electorModel.js';
 import Election from '../models/electionModel.js';
 import CandidateRound from '../models/candidateRoundModel.js';
 
-import { send_email_to } from '../event/email.js';
 import { sortArrayDesc } from '../helpers/index.js';
 import Post from '../models/postModel.js';
 
@@ -41,18 +40,6 @@ function add_the_candidate_to_the_round(round, candidate_round) {
 
 // ---------------------------------- //
 
-function send_emails_to_all(electors) {
-    for (let i = 0; i < electors.length; i++) {
-        const current_elector = electors[i];
-
-        send_email_to(
-            current_elector.email,
-            'Jeton de vote',
-            `Bonjour ${current_elector.first_name} ${current_elector.name} ! Vous venez de recevoir votre jeton de vote pour l'élection qui vient de débuter.Vous devrez le saisir pour confirmer chaque vote que vous ferez. Conservez le bien. | Jeton de vote : ${current_elector.token_for_vote} || Lien du vote : ${process.env.VOTE_WEB_SITE}/choose_your_candidate/6443cadfbf58379ac1b03042`
-        );
-    }
-}
-
 async function start_round(request, response) {
     const { round_id } = request.params;
 
@@ -74,19 +61,8 @@ async function start_round(request, response) {
             const electors = await Elector.find({ election_id: election_id });
             console.log('electors ICI', electors);
 
-            // for (let i = 0; i < electors.length; i++) {
-            //     send_email_to(
-            //         electors[i].email,
-            //         'Jeton de vote',
-            //         `Bonjour ${electors[i].first_name} ${electors[i].name} ! Vous venez de recevoir votre jeton de vote pour l'élection qui vient de débuter.Vous devrez le saisir pour confirmer chaque vote que vous ferez. Conservez le bien. | Jeton de vote : ${electors[i].token_for_vote} || Lien du vote : ${process.env.VOTE_WEB_SITE}/choose_your_candidate/${election_id} || Lien des résultats : ${process.env.VOTE_WEB_SITE}/result_page/${election_id} `
-            //     );
-            // }
-            send_emails_to_all(electors);
-            //----- TODO : SEND EMAIL TO ALL ELECTORS
-
             return response.status(200).json({
-                message:
-                    'Le round a commencé et les électeurs on été notifiés.',
+                message: 'Le round a commencé.',
                 round: round_updated,
             });
         } else {
