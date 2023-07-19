@@ -139,17 +139,28 @@ function update_user(request, response) {
             const crypted_password = await bcrypt.hash(password, 10);
             update = { ...update, password: crypted_password };
 
-            User.findOneAndUpdate({ _id }, update, {
-                new: true,
-            })
-                .then((user) => {
-                    return response.status(200).json({
+            User.find({ email }).then(async (users) => {
+                console.log('USER EMAIL', users);
+
+                if (users.length <= 1) {
+                    User.findOneAndUpdate({ _id }, update, {
+                        new: true,
+                    })
+                        .then((user) => {
+                            return response.status(200).json({
+                                message:
+                                    'Vos informations ont été mises à jour avec succès',
+                                user,
+                            });
+                        })
+                        .catch((error) => response.status(500).json({ error }));
+                } else {
+                    return response.status(401).json({
                         message:
-                            'Vos informations ont été mises à jour avec succès',
-                        user,
+                            "Impossible de mettre à  jour l'email. Cet email est déjà utilisé.",
                     });
-                })
-                .catch((error) => response.status(500).json({ error }));
+                }
+            });
         })
         .catch((error) => response.status(500).json({ error }));
 }
