@@ -44,7 +44,7 @@ async function send_email_to(elector_email, subject, message) {
 }
 
 async function send_emails_to_all(request, response, next) {
-    const { electors } = request.body;
+    const { electors, election_id } = request.body;
 
     for (let i = 0; i < electors.length; i++) {
         const current_elector = electors[i];
@@ -52,7 +52,7 @@ async function send_emails_to_all(request, response, next) {
         await send_email_to(
             current_elector.email,
             'Jeton de vote',
-            `Bonjour ${current_elector.first_name} ${current_elector.name} ! Vous venez de recevoir votre jeton de vote pour l'élection qui vient de débuter.Vous devrez le saisir pour confirmer chaque vote que vous ferez. Conservez le bien. | Jeton de vote : ${current_elector.token_for_vote} || Lien du vote : ${process.env.VOTE_WEB_SITE}/choose_your_candidate/6443cadfbf58379ac1b03042`
+            `Bonjour ${current_elector.first_name} ${current_elector.name} ! Vous venez de recevoir votre jeton de vote pour l'élection qui vient de débuter.Vous devrez le saisir pour confirmer chaque vote que vous ferez. Conservez le bien. | Jeton de vote : ${current_elector.token_for_vote} || Lien du vote : ${process.env.VOTE_WEB_SITE}/choose_your_candidate/${election_id}`
         );
     }
 
