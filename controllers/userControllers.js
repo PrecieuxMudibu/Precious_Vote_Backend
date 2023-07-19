@@ -128,11 +128,14 @@ function update_user(request, response) {
 
             if (!bcrypt.compareSync(old_password, user.password)) {
                 return response.status(401).json({
-                    message:
-                        'Soit votre ancien mot de passe est incorrect, soit votre nouveau mot de passe est vide.',
+                    message: 'Votre ancien mot de passe est incorrect.',
                 });
             }
-
+            if (!password) {
+                return response.status(401).json({
+                    message: 'Votre nouveau mot de passe est vide.',
+                });
+            }
             const crypted_password = await bcrypt.hash(password, 10);
             update = { ...update, password: crypted_password };
 
