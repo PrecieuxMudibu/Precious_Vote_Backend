@@ -4,11 +4,11 @@ const { Schema, model } = mongoose;
 
 const candidateRoundSchema = new Schema(
     {
-        candidate_id: {
+        candidate: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Candidate',
         },
-        round_id: {
+        round: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Round',
         },

@@ -4,11 +4,11 @@ const { Schema, model } = mongoose;
 
 const candidateSchema = new Schema(
     {
-        election_id: {
+        election: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Election',
         },
-        post_id: {
+        post: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Post',
         },
