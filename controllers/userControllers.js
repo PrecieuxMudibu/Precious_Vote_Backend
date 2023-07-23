@@ -126,19 +126,21 @@ function update_user(request, response) {
                 });
             }
 
-            if (!bcrypt.compareSync(old_password, user.password)) {
-                return response.status(401).json({
-                    message: 'Votre ancien mot de passe est incorrect.',
-                });
+            if (old_password) {
+                if (!bcrypt.compareSync(old_password, user.password)) {
+                    return response.status(401).json({
+                        message: 'Votre ancien mot de passe est incorrect.',
+                    });
+                }
+                if (!password) {
+                    return response.status(401).json({
+                        message: 'Votre nouveau mot de passe est vide.',
+                    });
+                }
+                const crypted_password = await bcrypt.hash(password, 10);
+                update = { ...update, password: crypted_password };
             }
-            if (!password) {
-                return response.status(401).json({
-                    message: 'Votre nouveau mot de passe est vide.',
-                });
-            }
-            const crypted_password = await bcrypt.hash(password, 10);
-            update = { ...update, password: crypted_password };
-
+            
             User.find({ email }).then(async (users) => {
                 console.log('USER EMAIL', users);
 
