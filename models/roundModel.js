@@ -4,7 +4,7 @@ const { Schema, model } = mongoose;
 
 const roundSchema = new Schema(
     {
-        post_id: {
+        post: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Post',
         },
@@ -12,7 +12,19 @@ const roundSchema = new Schema(
         number: { type: Number },
         begin_date: { type: Date },
         end_date: { type: Date },
-        status: { type: String, enum: ['Not started', 'In progress', 'Completed'] },
+        status: {
+            type: String,
+            enum: ['Not started', 'In progress', 'Completed'],
+        },
+        candidates: [
+            {
+                voices: { type: mongoose.Schema.Types.Number, default: 0 },
+                candidate: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Candidate',
+                },
+            }
+        ],
     },
     { timestamps: true }
 );

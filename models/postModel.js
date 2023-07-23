@@ -5,12 +5,24 @@ const { Schema, model } = mongoose;
 const postSchema = new Schema(
     {
         name: { type: String },
-        election_id: {
+        election: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Election',
         },
+        candidates: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Candidate',
+            },
+        ],
+        rounds: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Round',
+            },
+        ],
     },
-       
+
     { timestamps: true }
 );
 

@@ -109,4 +109,61 @@ function get_user(request, response) {
         .catch((error) => response.status(500).json({ error }));
 }
 
-export { register, login, get_user };
+function update_user(request, response) {
+    const { _id } = request.params;
+
+    const { name, email, old_password, password, profile_picture } =
+        request.body;
+
+    let update = { name, email, profile_picture };
+
+    User.findOne({ _id })
+        .then(async (user) => {
+            if (!user) {
+                return response.status(401).json({
+                    message:
+                        'Les identifiants que vous avez entrés sont incorrects, veuillez réessayer.',
+                });
+            }
+
+            if (old_password) {
+                if (!bcrypt.compareSync(old_password, user.password)) {
+                    return response.status(401).json({
+                        message: 'Votre ancien mot de passe est incorrect.',
+                    });
+                }
+                if (!password) {
+                    return response.status(401).json({
+                        message: 'Votre nouveau mot de passe est vide.',
+                    });
+                }
+                const crypted_password = await bcrypt.hash(password, 10);
+                update = { ...update, password: crypted_password };
+            }
+            
+            User.find({ email }).then(async (users) => {
+                console.log('USER EMAIL', users);
+
+                if (users.length <= 1) {
+                    User.findOneAndUpdate({ _id }, update, {
+                        new: true,
+                    })
+                        .then((user) => {
+                            return response.status(200).json({
+                                message:
+                                    'Vos informations ont été mises à jour avec succès',
+                                user,
+                            });
+                        })
+                        .catch((error) => response.status(500).json({ error }));
+                } else {
+                    return response.status(401).json({
+                        message:
+                            "Impossible de mettre à  jour l'email. Cet email est déjà utilisé.",
+                    });
+                }
+            });
+        })
+        .catch((error) => response.status(500).json({ error }));
+}
+export { register, login, get_user, update_user };
